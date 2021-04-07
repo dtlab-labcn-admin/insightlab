@@ -1,6 +1,8 @@
+#! /usr/bin/env python
+from os import environ
 from insightlab import Insight, InsightObjects
 
-TOKEN = ""
+TOKEN = environ.get("INSIGHT_TOKEN", "")
 
 ## Set login
 i = Insight.API(TOKEN, "4")

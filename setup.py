@@ -1,7 +1,8 @@
 import setuptools
 from os import path
+
 this_directory = path.abspath(path.dirname(__file__))
-with open(path.join(this_directory, "README.md"), encoding='utf-8') as fh:
+with open(path.join(this_directory, "README.md"), encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
@@ -16,8 +17,6 @@ setuptools.setup(
     python_requires=">=3.7",
     url="https://github.com/idlab-org/insightlab",
     packages=["insightlab"],
-    classifiers=[
-        "Programming Language :: Python :: 3"
-    ],
+    classifiers=["Programming Language :: Python :: 3"],
     install_requires=["dotmap", "requests", "jsonpickle"],
 )

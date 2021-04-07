@@ -8,7 +8,9 @@ i = Insight.API(TOKEN, "4")
 # Load the object
 my_server = i.load("IDLAB-4802")
 try:
-    print(f"Current IPs: {my_server.attribute_value_by_name('IP', first_found = False)}")
+    print(
+        f"Current IPs: {my_server.attribute_value_by_name('IP', first_found = False)}"
+    )
 except:
     print(f"Current IPs: no ips found")
 
@@ -24,7 +26,7 @@ i.update_attribute(my_server.id, attr_id, ip.id)
 
 # Reload and print the results
 my_server = i.load("IDLAB-4802")
-ips = my_server.attribute_value_by_name('IP', first_found = False)[0].displayValue
+ips = my_server.attribute_value_by_name("IP", first_found=False)[0].displayValue
 print(f"Current IPs: {ips}")
 
 input("Press Enter to continue...")

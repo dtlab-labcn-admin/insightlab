@@ -1,3 +1,6 @@
 */__pycache__/*
 tests/*
 *.egg-info
+
+# Vscode
+.history

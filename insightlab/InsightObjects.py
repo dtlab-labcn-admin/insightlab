@@ -5,44 +5,50 @@ from enum import Enum
 
 class objectTypeAttribute(Enum):
     """
-    Enum to hold objectTypeAttribute. 
+    Enum to hold objectTypeAttribute.
     Ref: https://documentation.mindville.com/display/INSCLOUD/REST+API+-+Object+type+attributes
     """
+
     def __str__(self):
         return str(self.value)
-    Default=0
-    Object=1
-    User=2
-    Confluence=3
-    Group=4
-    Status=7
+
+    Default = 0
+    Object = 1
+    User = 2
+    Confluence = 3
+    Group = 4
+    Status = 7
+
 
 class objectDefaultTypeAttribute(Enum):
     """
     Enum to hold the default types
     """
+
     def __str__(self):
-        return str(self.value)    
-    Text=0
-    Integer=1
-    Boolean=2
-    Double=3
-    Date=4
-    Time=5
-    DateTime=6
-    URL=7
-    Email=8
-    Textarea=9
-    Select=10
-    IPAddress=11
+        return str(self.value)
+
+    Text = 0
+    Integer = 1
+    Boolean = 2
+    Double = 3
+    Date = 4
+    Time = 5
+    DateTime = 6
+    URL = 7
+    Email = 8
+    Textarea = 9
+    Select = 10
+    IPAddress = 11
+
 
 class IQLResponse:
-    """ 
+    """
     IQL Response object
 
     Args:
         raw_json (str): The raw response
-    
+
     Attributes:
         parsed (DotMap): The response in a DotMap format
         iql (str): The original IQL query
@@ -53,10 +59,11 @@ class IQLResponse:
         self.raw = raw_json
         self.parsed = DotMap(raw_json)
         self.iql = self.parsed.iql
-        self.objects = self.parsed.objectEntries  
+        self.objects = self.parsed.objectEntries
+
 
 class Attributes:
-    """ 
+    """
     Structured object to hold attributes
 
     Args:
@@ -65,6 +72,7 @@ class Attributes:
     Attributes:
         objectAttributeValues (str): The values for the attribute
     """
+
     def __init__(self, object_type_attribute_id):
         self.objectTypeAttributeId = object_type_attribute_id
         self.objectAttributeValues = []
@@ -76,11 +84,8 @@ class Attributes:
         Args:
             value (str): The value of the attribute
         """
-        self.objectAttributeValues.append(
-            {
-                "value": value
-            }
-        )
+        self.objectAttributeValues.append({"value": value})
+
 
 class NewObject:
     """
@@ -92,6 +97,7 @@ class NewObject:
     Attributes:
         attributes (Attribute): The attributes of the object
     """
+
     def __init__(self, object_type_id):
         self.objectTypeId = object_type_id
         self.attributes = []
@@ -99,7 +105,7 @@ class NewObject:
     def add_attribute(self, object_type_attribute_id, value):
         """
         Adds an attribute object to the newly created object.
-    
+
         Args:
             object_type_attribute_id (str): The attribute type's id.
             value (str): The value of the attribute
@@ -108,13 +114,14 @@ class NewObject:
         a.add_value(value)
         self.attributes.append(a)
 
+
 class Object:
-    """ 
+    """
     Base class for returning objects.
 
     Args:
         raw_json (str): The raw json data of the object
-    
+
     Attributes:
         parsed (DotMap): The object parsed in a map
         id (str): The id of the object
@@ -145,7 +152,7 @@ class Object:
         """
         print(self.raw)
 
-    def attribute_value_by_name(self, name, first_found = True):
+    def attribute_value_by_name(self, name, first_found=True):
         """
         Get the value of a specific attribute for the object
 
@@ -165,10 +172,10 @@ class Object:
                     return attr.objectAttributeValues
         raise Exception(f"No attributes with name {name} found.")
 
-    def attribute_id_by_name(self, name, first_found = True):
-        """ 
+    def attribute_id_by_name(self, name, first_found=True):
+        """
         Get the id of an attribute by name.
-        
+
         Args:
             name (str): The attribute to search
             first_found (bool, optional): Defaults to true, will return onlyt the first attribute found.

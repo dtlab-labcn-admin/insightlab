@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>insightlab.InsightObjects API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>insightlab.InsightObjects</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import json
+from dotmap import DotMap
+from enum import Enum
+
+
+class objectTypeAttribute(Enum):
+    &#34;&#34;&#34;
+    Enum to hold objectTypeAttribute. 
+    Ref: https://documentation.mindville.com/display/INSCLOUD/REST+API+-+Object+type+attributes
+    &#34;&#34;&#34;
+    def __str__(self):
+        return str(self.value)
+    Default=0
+    Object=1
+    User=2
+    Confluence=3
+    Group=4
+    Status=7
+
+class objectDefaultTypeAttribute(Enum):
+    &#34;&#34;&#34;
+    Enum to hold the default types
+    &#34;&#34;&#34;
+    def __str__(self):
+        return str(self.value)    
+    Text=0
+    Integer=1
+    Boolean=2
+    Double=3
+    Date=4
+    Time=5
+    DateTime=6
+    URL=7
+    Email=8
+    Textarea=9
+    Select=10
+    IPAddress=11
+
+class IQLResponse:
+    &#34;&#34;&#34; 
+    IQL Response object
+
+    Args:
+        raw_json (str): The raw response
+    
+    Attributes:
+        parsed (DotMap): The response in a DotMap format
+        iql (str): The original IQL query
+        objects (str[]): Parsed objects
+    &#34;&#34;&#34;
+
+    def __init__(self, raw_json):
+        self.raw = raw_json
+        self.parsed = DotMap(raw_json)
+        self.iql = self.parsed.iql
+        self.objects = self.parsed.objectEntries  
+
+class Attributes:
+    &#34;&#34;&#34; 
+    Structured object to hold attributes
+
+    Args:
+        object_type_attribute_id (str):  The attribute type&#39;s id.
+
+    Attributes:
+        objectAttributeValues (str): The values for the attribute
+    &#34;&#34;&#34;
+    def __init__(self, object_type_attribute_id):
+        self.objectTypeAttributeId = object_type_attribute_id
+        self.objectAttributeValues = []
+
+    def add_value(self, value):
+        &#34;&#34;&#34;
+        Adds a value to an attribute
+
+        Args:
+            value (str): The value of the attribute
+        &#34;&#34;&#34;
+        self.objectAttributeValues.append(
+            {
+                &#34;value&#34;: value
+            }
+        )
+
+class NewObject:
+    &#34;&#34;&#34;
+    Base class for new object creation
+
+    Args:
+        object_type_id (str): The object type id to create
+
+    Attributes:
+        attributes (Attribute): The attributes of the object
+    &#34;&#34;&#34;
+    def __init__(self, object_type_id):
+        self.objectTypeId = object_type_id
+        self.attributes = []
+
+    def add_attribute(self, object_type_attribute_id, value):
+        &#34;&#34;&#34;
+        Adds an attribute object to the newly created object.
+    
+        Args:
+            object_type_attribute_id (str): The attribute type&#39;s id.
+            value (str): The value of the attribute
+        &#34;&#34;&#34;
+        a = Attributes(object_type_attribute_id)
+        a.add_value(value)
+        self.attributes.append(a)
+
+class Object:
+    &#34;&#34;&#34; 
+    Base class for returning objects.
+
+    Args:
+        raw_json (str): The raw json data of the object
+    
+    Attributes:
+        parsed (DotMap): The object parsed in a map
+        id (str): The id of the object
+        name (str): The name of the object
+        objectKey (str): The key of the object
+        objectSchema: The schema the object belongs to
+        created (str): The object&#39;s creation timestamp
+        updated (str): The object&#39;s last update timestamp
+        hasAvatar (bool): If the object has an avatar
+        attributes (DotMap[]): The attributes of the object
+    &#34;&#34;&#34;
+
+    def __init__(self, raw_json):
+        self.raw = raw_json
+        self.parsed = DotMap(raw_json)
+        self.id = self.parsed.id
+        self.name = self.parsed.name
+        self.objectKey = self.parsed.objectKey
+        self.objectSchema = self.parsed.objectSchema
+        self.created = self.parsed.created
+        self.updated = self.parsed.updated
+        self.hasAvatar = self.parsed.hasAvatar
+        self.attributes = self.parsed.attributes
+
+    def dump(self):
+        &#34;&#34;&#34;
+        Print the raw object to console
+        &#34;&#34;&#34;
+        print(self.raw)
+
+    def attribute_value_by_name(self, name, first_found = True):
+        &#34;&#34;&#34;
+        Get the value of a specific attribute for the object
+
+        Args:
+            name (str): Name of the attribute to get the value
+            first_found (bool, optional): Defaults to true, will return onlyt the first attribute found.
+
+        Returns:
+            value (str): Value of the given attribute
+            values (str[]): All values in an array if first_found is False
+        &#34;&#34;&#34;
+        for attr in self.attributes:
+            if attr.objectTypeAttribute.name == name:
+                if first_found:
+                    return attr.objectAttributeValues[0].value
+                else:
+                    return attr.objectAttributeValues
+        raise Exception(f&#34;No attributes with name {name} found.&#34;)
+
+    def attribute_id_by_name(self, name, first_found = True):
+        &#34;&#34;&#34; 
+        Get the id of an attribute by name.
+        
+        Args:
+            name (str): The attribute to search
+            first_found (bool, optional): Defaults to true, will return onlyt the first attribute found.
+
+        Returns:
+            value (str): Id of the given attribute
+            values (str[]): All values in an array if first_found is False
+        &#34;&#34;&#34;
+        for attr in self.attributes:
+            if attr.objectTypeAttribute.name == name:
+                if first_found:
+                    return attr.objectTypeAttribute.id
+                else:
+                    return attr.objectTypeAttribute
+        raise Exception(f&#34;No attributes with name {name} found.&#34;)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="insightlab.InsightObjects.Attributes"><code class="flex name class">
+<span>class <span class="ident">Attributes</span></span>
+<span>(</span><span>object_type_attribute_id)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Structured object to hold attributes</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>object_type_attribute_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>The attribute type's id.</dd>
+</dl>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>objectAttributeValues</code></strong> :&ensp;<code>str</code></dt>
+<dd>The values for the attribute</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Attributes:
+    &#34;&#34;&#34; 
+    Structured object to hold attributes
+
+    Args:
+        object_type_attribute_id (str):  The attribute type&#39;s id.
+
+    Attributes:
+        objectAttributeValues (str): The values for the attribute
+    &#34;&#34;&#34;
+    def __init__(self, object_type_attribute_id):
+        self.objectTypeAttributeId = object_type_attribute_id
+        self.objectAttributeValues = []
+
+    def add_value(self, value):
+        &#34;&#34;&#34;
+        Adds a value to an attribute
+
+        Args:
+            value (str): The value of the attribute
+        &#34;&#34;&#34;
+        self.objectAttributeValues.append(
+            {
+                &#34;value&#34;: value
+            }
+        )</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="insightlab.InsightObjects.Attributes.add_value"><code class="name flex">
+<span>def <span class="ident">add_value</span></span>(<span>self, value)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a value to an attribute</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>value</code></strong> :&ensp;<code>str</code></dt>
+<dd>The value of the attribute</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_value(self, value):
+    &#34;&#34;&#34;
+    Adds a value to an attribute
+
+    Args:
+        value (str): The value of the attribute
+    &#34;&#34;&#34;
+    self.objectAttributeValues.append(
+        {
+            &#34;value&#34;: value
+        }
+    )</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="insightlab.InsightObjects.IQLResponse"><code class="flex name class">
+<span>class <span class="ident">IQLResponse</span></span>
+<span>(</span><span>raw_json)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>IQL Response object</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>raw_json</code></strong> :&ensp;<code>str</code></dt>
+<dd>The raw response</dd>
+</dl>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>parsed</code></strong> :&ensp;<code>DotMap</code></dt>
+<dd>The response in a DotMap format</dd>
+<dt><strong><code>iql</code></strong> :&ensp;<code>str</code></dt>
+<dd>The original IQL query</dd>
+<dt><strong><code>objects</code></strong> :&ensp;<code>str[]</code></dt>
+<dd>Parsed objects</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class IQLResponse:
+    &#34;&#34;&#34; 
+    IQL Response object
+
+    Args:
+        raw_json (str): The raw response
+    
+    Attributes:
+        parsed (DotMap): The response in a DotMap format
+        iql (str): The original IQL query
+        objects (str[]): Parsed objects
+    &#34;&#34;&#34;
+
+    def __init__(self, raw_json):
+        self.raw = raw_json
+        self.parsed = DotMap(raw_json)
+        self.iql = self.parsed.iql
+        self.objects = self.parsed.objectEntries  </code></pre>
+</details>
+</dd>
+<dt id="insightlab.InsightObjects.NewObject"><code class="flex name class">
+<span>class <span class="ident">NewObject</span></span>
+<span>(</span><span>object_type_id)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Base class for new object creation</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>object_type_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>The object type id to create</dd>
+</dl>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>attributes</code></strong> :&ensp;<code>Attribute</code></dt>
+<dd>The attributes of the object</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NewObject:
+    &#34;&#34;&#34;
+    Base class for new object creation
+
+    Args:
+        object_type_id (str): The object type id to create
+
+    Attributes:
+        attributes (Attribute): The attributes of the object
+    &#34;&#34;&#34;
+    def __init__(self, object_type_id):
+        self.objectTypeId = object_type_id
+        self.attributes = []
+
+    def add_attribute(self, object_type_attribute_id, value):
+        &#34;&#34;&#34;
+        Adds an attribute object to the newly created object.
+    
+        Args:
+            object_type_attribute_id (str): The attribute type&#39;s id.
+            value (str): The value of the attribute
+        &#34;&#34;&#34;
+        a = Attributes(object_type_attribute_id)
+        a.add_value(value)
+        self.attributes.append(a)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="insightlab.InsightObjects.NewObject.add_attribute"><code class="name flex">
+<span>def <span class="ident">add_attribute</span></span>(<span>self, object_type_attribute_id, value)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds an attribute object to the newly created object.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>object_type_attribute_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>The attribute type's id.</dd>
+<dt><strong><code>value</code></strong> :&ensp;<code>str</code></dt>
+<dd>The value of the attribute</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_attribute(self, object_type_attribute_id, value):
+    &#34;&#34;&#34;
+    Adds an attribute object to the newly created object.
+
+    Args:
+        object_type_attribute_id (str): The attribute type&#39;s id.
+        value (str): The value of the attribute
+    &#34;&#34;&#34;
+    a = Attributes(object_type_attribute_id)
+    a.add_value(value)
+    self.attributes.append(a)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="insightlab.InsightObjects.Object"><code class="flex name class">
+<span>class <span class="ident">Object</span></span>
+<span>(</span><span>raw_json)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Base class for returning objects.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>raw_json</code></strong> :&ensp;<code>str</code></dt>
+<dd>The raw json data of the object</dd>
+</dl>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>parsed</code></strong> :&ensp;<code>DotMap</code></dt>
+<dd>The object parsed in a map</dd>
+<dt><strong><code>id</code></strong> :&ensp;<code>str</code></dt>
+<dd>The id of the object</dd>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the object</dd>
+<dt><strong><code>objectKey</code></strong> :&ensp;<code>str</code></dt>
+<dd>The key of the object</dd>
+<dt><strong><code>objectSchema</code></strong></dt>
+<dd>The schema the object belongs to</dd>
+<dt><strong><code>created</code></strong> :&ensp;<code>str</code></dt>
+<dd>The object's creation timestamp</dd>
+<dt><strong><code>updated</code></strong> :&ensp;<code>str</code></dt>
+<dd>The object's last update timestamp</dd>
+<dt><strong><code>hasAvatar</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If the object has an avatar</dd>
+<dt><strong><code>attributes</code></strong> :&ensp;<code>DotMap[]</code></dt>
+<dd>The attributes of the object</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Object:
+    &#34;&#34;&#34; 
+    Base class for returning objects.
+
+    Args:
+        raw_json (str): The raw json data of the object
+    
+    Attributes:
+        parsed (DotMap): The object parsed in a map
+        id (str): The id of the object
+        name (str): The name of the object
+        objectKey (str): The key of the object
+        objectSchema: The schema the object belongs to
+        created (str): The object&#39;s creation timestamp
+        updated (str): The object&#39;s last update timestamp
+        hasAvatar (bool): If the object has an avatar
+        attributes (DotMap[]): The attributes of the object
+    &#34;&#34;&#34;
+
+    def __init__(self, raw_json):
+        self.raw = raw_json
+        self.parsed = DotMap(raw_json)
+        self.id = self.parsed.id
+        self.name = self.parsed.name
+        self.objectKey = self.parsed.objectKey
+        self.objectSchema = self.parsed.objectSchema
+        self.created = self.parsed.created
+        self.updated = self.parsed.updated
+        self.hasAvatar = self.parsed.hasAvatar
+        self.attributes = self.parsed.attributes
+
+    def dump(self):
+        &#34;&#34;&#34;
+        Print the raw object to console
+        &#34;&#34;&#34;
+        print(self.raw)
+
+    def attribute_value_by_name(self, name, first_found = True):
+        &#34;&#34;&#34;
+        Get the value of a specific attribute for the object
+
+        Args:
+            name (str): Name of the attribute to get the value
+            first_found (bool, optional): Defaults to true, will return onlyt the first attribute found.
+
+        Returns:
+            value (str): Value of the given attribute
+            values (str[]): All values in an array if first_found is False
+        &#34;&#34;&#34;
+        for attr in self.attributes:
+            if attr.objectTypeAttribute.name == name:
+                if first_found:
+                    return attr.objectAttributeValues[0].value
+                else:
+                    return attr.objectAttributeValues
+        raise Exception(f&#34;No attributes with name {name} found.&#34;)
+
+    def attribute_id_by_name(self, name, first_found = True):
+        &#34;&#34;&#34; 
+        Get the id of an attribute by name.
+        
+        Args:
+            name (str): The attribute to search
+            first_found (bool, optional): Defaults to true, will return onlyt the first attribute found.
+
+        Returns:
+            value (str): Id of the given attribute
+            values (str[]): All values in an array if first_found is False
+        &#34;&#34;&#34;
+        for attr in self.attributes:
+            if attr.objectTypeAttribute.name == name:
+                if first_found:
+                    return attr.objectTypeAttribute.id
+                else:
+                    return attr.objectTypeAttribute
+        raise Exception(f&#34;No attributes with name {name} found.&#34;)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="insightlab.InsightObjects.Object.attribute_id_by_name"><code class="name flex">
+<span>def <span class="ident">attribute_id_by_name</span></span>(<span>self, name, first_found=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the id of an attribute by name.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The attribute to search</dd>
+<dt><strong><code>first_found</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Defaults to true, will return onlyt the first attribute found.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>value (str): Id of the given attribute
+values (str[]): All values in an array if first_found is False</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def attribute_id_by_name(self, name, first_found = True):
+    &#34;&#34;&#34; 
+    Get the id of an attribute by name.
+    
+    Args:
+        name (str): The attribute to search
+        first_found (bool, optional): Defaults to true, will return onlyt the first attribute found.
+
+    Returns:
+        value (str): Id of the given attribute
+        values (str[]): All values in an array if first_found is False
+    &#34;&#34;&#34;
+    for attr in self.attributes:
+        if attr.objectTypeAttribute.name == name:
+            if first_found:
+                return attr.objectTypeAttribute.id
+            else:
+                return attr.objectTypeAttribute
+    raise Exception(f&#34;No attributes with name {name} found.&#34;)</code></pre>
+</details>
+</dd>
+<dt id="insightlab.InsightObjects.Object.attribute_value_by_name"><code class="name flex">
+<span>def <span class="ident">attribute_value_by_name</span></span>(<span>self, name, first_found=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the value of a specific attribute for the object</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>Name of the attribute to get the value</dd>
+<dt><strong><code>first_found</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Defaults to true, will return onlyt the first attribute found.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>value (str): Value of the given attribute
+values (str[]): All values in an array if first_found is False</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def attribute_value_by_name(self, name, first_found = True):
+    &#34;&#34;&#34;
+    Get the value of a specific attribute for the object
+
+    Args:
+        name (str): Name of the attribute to get the value
+        first_found (bool, optional): Defaults to true, will return onlyt the first attribute found.
+
+    Returns:
+        value (str): Value of the given attribute
+        values (str[]): All values in an array if first_found is False
+    &#34;&#34;&#34;
+    for attr in self.attributes:
+        if attr.objectTypeAttribute.name == name:
+            if first_found:
+                return attr.objectAttributeValues[0].value
+            else:
+                return attr.objectAttributeValues
+    raise Exception(f&#34;No attributes with name {name} found.&#34;)</code></pre>
+</details>
+</dd>
+<dt id="insightlab.InsightObjects.Object.dump"><code class="name flex">
+<span>def <span class="ident">dump</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Print the raw object to console</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dump(self):
+    &#34;&#34;&#34;
+    Print the raw object to console
+    &#34;&#34;&#34;
+    print(self.raw)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="insightlab.InsightObjects.objectDefaultTypeAttribute"><code class="flex name class">
+<span>class <span class="ident">objectDefaultTypeAttribute</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enum to hold the default types</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class objectDefaultTypeAttribute(Enum):
+    &#34;&#34;&#34;
+    Enum to hold the default types
+    &#34;&#34;&#34;
+    def __str__(self):
+        return str(self.value)    
+    Text=0
+    Integer=1
+    Boolean=2
+    Double=3
+    Date=4
+    Time=5
+    DateTime=6
+    URL=7
+    Email=8
+    Textarea=9
+    Select=10
+    IPAddress=11</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="insightlab.InsightObjects.objectDefaultTypeAttribute.Boolean"><code class="name">var <span class="ident">Boolean</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="insightlab.InsightObjects.objectDefaultTypeAttribute.Date"><code class="name">var <span class="ident">Date</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="insightlab.InsightObjects.objectDefaultTypeAttribute.DateTime"><code class="name">var <span class="ident">DateTime</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="insightlab.InsightObjects.objectDefaultTypeAttribute.Double"><code class="name">var <span class="ident">Double</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="insightlab.InsightObjects.objectDefaultTypeAttribute.Email"><code class="name">var <span class="ident">Email</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="insightlab.InsightObjects.objectDefaultTypeAttribute.IPAddress"><code class="name">var <span class="ident">IPAddress</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="insightlab.InsightObjects.objectDefaultTypeAttribute.Integer"><code class="name">var <span class="ident">Integer</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="insightlab.InsightObjects.objectDefaultTypeAttribute.Select"><code class="name">var <span class="ident">Select</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="insightlab.InsightObjects.objectDefaultTypeAttribute.Text"><code class="name">var <span class="ident">Text</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="insightlab.InsightObjects.objectDefaultTypeAttribute.Textarea"><code class="name">var <span class="ident">Textarea</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="insightlab.InsightObjects.objectDefaultTypeAttribute.Time"><code class="name">var <span class="ident">Time</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="insightlab.InsightObjects.objectDefaultTypeAttribute.URL"><code class="name">var <span class="ident">URL</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="insightlab.InsightObjects.objectTypeAttribute"><code class="flex name class">
+<span>class <span class="ident">objectTypeAttribute</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enum to hold objectTypeAttribute.
+Ref: <a href="https://documentation.mindville.com/display/INSCLOUD/REST+API+-+Object+type+attributes">https://documentation.mindville.com/display/INSCLOUD/REST+API+-+Object+type+attributes</a></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class objectTypeAttribute(Enum):
+    &#34;&#34;&#34;
+    Enum to hold objectTypeAttribute. 
+    Ref: https://documentation.mindville.com/display/INSCLOUD/REST+API+-+Object+type+attributes
+    &#34;&#34;&#34;
+    def __str__(self):
+        return str(self.value)
+    Default=0
+    Object=1
+    User=2
+    Confluence=3
+    Group=4
+    Status=7</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="insightlab.InsightObjects.objectTypeAttribute.Confluence"><code class="name">var <span class="ident">Confluence</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="insightlab.InsightObjects.objectTypeAttribute.Default"><code class="name">var <span class="ident">Default</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="insightlab.InsightObjects.objectTypeAttribute.Group"><code class="name">var <span class="ident">Group</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="insightlab.InsightObjects.objectTypeAttribute.Object"><code class="name">var <span class="ident">Object</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="insightlab.InsightObjects.objectTypeAttribute.Status"><code class="name">var <span class="ident">Status</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="insightlab.InsightObjects.objectTypeAttribute.User"><code class="name">var <span class="ident">User</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="insightlab" href="index.html">insightlab</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="insightlab.InsightObjects.Attributes" href="#insightlab.InsightObjects.Attributes">Attributes</a></code></h4>
+<ul class="">
+<li><code><a title="insightlab.InsightObjects.Attributes.add_value" href="#insightlab.InsightObjects.Attributes.add_value">add_value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="insightlab.InsightObjects.IQLResponse" href="#insightlab.InsightObjects.IQLResponse">IQLResponse</a></code></h4>
+</li>
+<li>
+<h4><code><a title="insightlab.InsightObjects.NewObject" href="#insightlab.InsightObjects.NewObject">NewObject</a></code></h4>
+<ul class="">
+<li><code><a title="insightlab.InsightObjects.NewObject.add_attribute" href="#insightlab.InsightObjects.NewObject.add_attribute">add_attribute</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="insightlab.InsightObjects.Object" href="#insightlab.InsightObjects.Object">Object</a></code></h4>
+<ul class="">
+<li><code><a title="insightlab.InsightObjects.Object.attribute_id_by_name" href="#insightlab.InsightObjects.Object.attribute_id_by_name">attribute_id_by_name</a></code></li>
+<li><code><a title="insightlab.InsightObjects.Object.attribute_value_by_name" href="#insightlab.InsightObjects.Object.attribute_value_by_name">attribute_value_by_name</a></code></li>
+<li><code><a title="insightlab.InsightObjects.Object.dump" href="#insightlab.InsightObjects.Object.dump">dump</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="insightlab.InsightObjects.objectDefaultTypeAttribute" href="#insightlab.InsightObjects.objectDefaultTypeAttribute">objectDefaultTypeAttribute</a></code></h4>
+<ul class="two-column">
+<li><code><a title="insightlab.InsightObjects.objectDefaultTypeAttribute.Boolean" href="#insightlab.InsightObjects.objectDefaultTypeAttribute.Boolean">Boolean</a></code></li>
+<li><code><a title="insightlab.InsightObjects.objectDefaultTypeAttribute.Date" href="#insightlab.InsightObjects.objectDefaultTypeAttribute.Date">Date</a></code></li>
+<li><code><a title="insightlab.InsightObjects.objectDefaultTypeAttribute.DateTime" href="#insightlab.InsightObjects.objectDefaultTypeAttribute.DateTime">DateTime</a></code></li>
+<li><code><a title="insightlab.InsightObjects.objectDefaultTypeAttribute.Double" href="#insightlab.InsightObjects.objectDefaultTypeAttribute.Double">Double</a></code></li>
+<li><code><a title="insightlab.InsightObjects.objectDefaultTypeAttribute.Email" href="#insightlab.InsightObjects.objectDefaultTypeAttribute.Email">Email</a></code></li>
+<li><code><a title="insightlab.InsightObjects.objectDefaultTypeAttribute.IPAddress" href="#insightlab.InsightObjects.objectDefaultTypeAttribute.IPAddress">IPAddress</a></code></li>
+<li><code><a title="insightlab.InsightObjects.objectDefaultTypeAttribute.Integer" href="#insightlab.InsightObjects.objectDefaultTypeAttribute.Integer">Integer</a></code></li>
+<li><code><a title="insightlab.InsightObjects.objectDefaultTypeAttribute.Select" href="#insightlab.InsightObjects.objectDefaultTypeAttribute.Select">Select</a></code></li>
+<li><code><a title="insightlab.InsightObjects.objectDefaultTypeAttribute.Text" href="#insightlab.InsightObjects.objectDefaultTypeAttribute.Text">Text</a></code></li>
+<li><code><a title="insightlab.InsightObjects.objectDefaultTypeAttribute.Textarea" href="#insightlab.InsightObjects.objectDefaultTypeAttribute.Textarea">Textarea</a></code></li>
+<li><code><a title="insightlab.InsightObjects.objectDefaultTypeAttribute.Time" href="#insightlab.InsightObjects.objectDefaultTypeAttribute.Time">Time</a></code></li>
+<li><code><a title="insightlab.InsightObjects.objectDefaultTypeAttribute.URL" href="#insightlab.InsightObjects.objectDefaultTypeAttribute.URL">URL</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="insightlab.InsightObjects.objectTypeAttribute" href="#insightlab.InsightObjects.objectTypeAttribute">objectTypeAttribute</a></code></h4>
+<ul class="two-column">
+<li><code><a title="insightlab.InsightObjects.objectTypeAttribute.Confluence" href="#insightlab.InsightObjects.objectTypeAttribute.Confluence">Confluence</a></code></li>
+<li><code><a title="insightlab.InsightObjects.objectTypeAttribute.Default" href="#insightlab.InsightObjects.objectTypeAttribute.Default">Default</a></code></li>
+<li><code><a title="insightlab.InsightObjects.objectTypeAttribute.Group" href="#insightlab.InsightObjects.objectTypeAttribute.Group">Group</a></code></li>
+<li><code><a title="insightlab.InsightObjects.objectTypeAttribute.Object" href="#insightlab.InsightObjects.objectTypeAttribute.Object">Object</a></code></li>
+<li><code><a title="insightlab.InsightObjects.objectTypeAttribute.Status" href="#insightlab.InsightObjects.objectTypeAttribute.Status">Status</a></code></li>
+<li><code><a title="insightlab.InsightObjects.objectTypeAttribute.User" href="#insightlab.InsightObjects.objectTypeAttribute.User">User</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

@@ -85,6 +85,16 @@ class Attributes:
             value (str): The value of the attribute
         """
         self.objectAttributeValues.append({"value": value})
+    
+    def add_values(self, values):
+        """
+        Adds values to an attribute
+
+        Args:
+            value (list): The values of the attribute
+        """        
+        for v in values:
+            self.objectAttributeValues.append({"value": v})
 
 
 class NewObject:
@@ -111,9 +121,11 @@ class NewObject:
             value (str): The value of the attribute
         """
         a = Attributes(object_type_attribute_id)
-        a.add_value(value)
+        if isinstance(value, list):
+            a.add_values(value)
+        else:
+            a.add_value(value)
         self.attributes.append(a)
-
 
 class Object:
     """

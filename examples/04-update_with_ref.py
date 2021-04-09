@@ -24,7 +24,7 @@ attr_id = i.find_object_type_attribute_id("Server", "IP")
 
 # Update the value using the object's id
 # Note here: The "value" here is the object's id.
-i.update_attribute(my_server.id, attr_id, ip.id)
+i.update_attribute(my_server.id, attr_id, [ip.id])
 
 # Reload and print the results
 my_server = i.load("IDLAB-4802")
@@ -34,7 +34,7 @@ print(f"Current IPs: {ips}")
 input("Press Enter to continue...")
 
 # Clear the ips
-i.update_attribute(my_server.id, attr_id, "")
+i.update_attribute(my_server.id, attr_id, [""])
 
 # Reload and print the results
 my_server = i.load("IDLAB-4802")

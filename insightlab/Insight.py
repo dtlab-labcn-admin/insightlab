@@ -159,24 +159,26 @@ class API:
             raise Exception(f"Unexpected status: {r.status_code}, {r.reason}")
         return InsightObjects.Object(json.loads(r.text))
 
-    def update_attribute(self, object_id, attribute_id, value):
+    def update_attribute(self, object_id, attribute):
         """
         Updates an attribute for a given object.
 
         Args:
             object_id (str): The id of the object to update
-            attribute_id (str): The id of the attribute to update
-            value (str): The new value for the attribute
+            attribute (Attributes): An attribute object
         """
         endpoint = f"/rest/insight/1.0/object/{object_id}"
         self.request.url = self.urlBase + endpoint
-        self.request.method = "PUT"
-        sub_attr = DotMap()
-        sub_attr.objectTypeAttributeId = attribute_id
-        sub_attr.objectAttributeValues = [{"value": value}]
+        self.request.method = "PUT"        
         new_attr = DotMap()
-        new_attr.attributes = [sub_attr]
-        self.request.data = json.dumps(new_attr.toDict())
+        new_attr.attributes = []
+        sub_attr = DotMap()
+        sub_attr.objectTypeAttributeId = attribute.objectTypeAttributeId
+        sub_attr.objectAttributeValues = []
+        for attr in attribute.objectAttributeValues:
+            sub_attr.objectAttributeValues.append(attr['value'])
+        new_attr.attributes.append(sub_attr)
+        self.request.data = json.dumps(new_attr.toDict())              
         if self.debug:
             print(self.request.data)
         r = self.prepare_and_send()

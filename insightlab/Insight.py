@@ -176,7 +176,7 @@ class API:
         sub_attr.objectTypeAttributeId = attribute.objectTypeAttributeId
         sub_attr.objectAttributeValues = []
         for attr in attribute.objectAttributeValues:
-            sub_attr.objectAttributeValues.append(attr['value'])
+            sub_attr.objectAttributeValues.append(attr)
         new_attr.attributes.append(sub_attr)
         self.request.data = json.dumps(new_attr.toDict())              
         if self.debug:

@@ -7,7 +7,7 @@ with open(path.join(this_directory, "README.md"), encoding="utf-8") as fh:
 
 setuptools.setup(
     name="insightlab",
-    version="0.1",
+    version="0.2",
     author="IDLab",
     author_email="it-admin@idlab.org",
     description="Library for interacting with Jira Cloud Insight API",

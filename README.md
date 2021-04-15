@@ -8,4 +8,4 @@ linux sh/bash/...:   export INSIGHT_TOKEN="<...>"
 windows powershell:  $env:INSIGHT_TOKEN="<...>";
 ```
 
-[Documentation](https://idlab-org.github.io/insightlab/)
+[Documentation](https://idlab-org.github.io/insightlab/insightlab)

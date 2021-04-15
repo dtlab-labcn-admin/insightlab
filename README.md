@@ -9,3 +9,6 @@ windows powershell:  $env:INSIGHT_TOKEN="<...>";
 ```
 
 [Documentation](https://idlab-org.github.io/insightlab/insightlab)
+
+## License
+Released under the Apache License 2.0.

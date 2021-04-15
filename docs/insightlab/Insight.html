@@ -257,7 +257,7 @@ class API:
     def find_object_type_id(self, name):
         &#34;&#34;&#34;
         Find the object type id on an object by name
-
+        
         Args:
             name (str): The name of the object to find the type.
 
@@ -286,6 +286,7 @@ class API:
     def find_object_type_attribute_id(self, object_type_name, attr_name):
         &#34;&#34;&#34;
         Find the id of an attribute for a specific object type.
+        Note: If you already have an object loaded, you can use obj.attribute_value_by_name(&#34;Name&#34;). It&#39;s faster as it requires not call made to the API.
 
         Args:
             object_type_name (str): The object type that has the attribute
@@ -616,7 +617,7 @@ class API:
     def find_object_type_id(self, name):
         &#34;&#34;&#34;
         Find the object type id on an object by name
-
+        
         Args:
             name (str): The name of the object to find the type.
 
@@ -645,6 +646,7 @@ class API:
     def find_object_type_attribute_id(self, object_type_name, attr_name):
         &#34;&#34;&#34;
         Find the id of an attribute for a specific object type.
+        Note: If you already have an object loaded, you can use obj.attribute_value_by_name(&#34;Name&#34;). It&#39;s faster as it requires not call made to the API.
 
         Args:
             object_type_name (str): The object type that has the attribute
@@ -849,7 +851,8 @@ New Server
 <span>def <span class="ident">find_object_type_attribute_id</span></span>(<span>self, object_type_name, attr_name)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Find the id of an attribute for a specific object type.</p>
+<div class="desc"><p>Find the id of an attribute for a specific object type.
+Note: If you already have an object loaded, you can use obj.attribute_value_by_name("Name"). It's faster as it requires not call made to the API.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>object_type_name</code></strong> :&ensp;<code>str</code></dt>
@@ -872,6 +875,7 @@ New Server
 <pre><code class="python">def find_object_type_attribute_id(self, object_type_name, attr_name):
     &#34;&#34;&#34;
     Find the id of an attribute for a specific object type.
+    Note: If you already have an object loaded, you can use obj.attribute_value_by_name(&#34;Name&#34;). It&#39;s faster as it requires not call made to the API.
 
     Args:
         object_type_name (str): The object type that has the attribute
@@ -929,7 +933,7 @@ New Server
 <pre><code class="python">def find_object_type_id(self, name):
     &#34;&#34;&#34;
     Find the object type id on an object by name
-
+    
     Args:
         name (str): The name of the object to find the type.
 

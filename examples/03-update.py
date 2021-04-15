@@ -14,8 +14,12 @@ print(f"Current hostname: {my_server.attribute_value_by_name('Hostname')}")
 ## Find the attribute's id
 id = my_server.attribute_id_by_name("Hostname")
 
+## Create the attribute object and add the value
+attr = InsightObjects.Attributes(id)
+attr.add_value("new_hostname.test.idlab.org")
+
 ## Update the attribute's value
-i.update_attribute(my_server.id, id, ["new_hostname.test.idlab.org"])
+i.update_attribute(my_server.id, attr)
 
 # Reload the object
 my_server = i.load("IDLAB-5709")

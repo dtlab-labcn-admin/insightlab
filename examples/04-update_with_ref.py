@@ -22,9 +22,13 @@ ip = i.find_object("10.0.10.20", "IP")
 # Find the attribute id we want to assign this object to
 attr_id = i.find_object_type_attribute_id("Server", "IP")
 
-# Update the value using the object's id
+## Create the attribute object and add the value
 # Note here: The "value" here is the object's id.
-i.update_attribute(my_server.id, attr_id, [ip.id])
+attr = InsightObjects.Attributes(attr_id)
+attr.add_value(ip.id)
+
+# Update the value using the object's id
+i.update_attribute(my_server.id, attr)
 
 # Reload and print the results
 my_server = i.load("IDLAB-4802")

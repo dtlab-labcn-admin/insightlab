@@ -1,46 +1,5 @@
 import json
 from dotmap import DotMap
-from enum import Enum
-
-
-class objectTypeAttribute(Enum):
-    """
-    Enum to hold objectTypeAttribute.
-    Ref: https://documentation.mindville.com/display/INSCLOUD/REST+API+-+Object+type+attributes
-    """
-
-    def __str__(self):
-        return str(self.value)
-
-    Default = 0
-    Object = 1
-    User = 2
-    Confluence = 3
-    Group = 4
-    Status = 7
-
-
-class objectDefaultTypeAttribute(Enum):
-    """
-    Enum to hold the default types
-    """
-
-    def __str__(self):
-        return str(self.value)
-
-    Text = 0
-    Integer = 1
-    Boolean = 2
-    Double = 3
-    Date = 4
-    Time = 5
-    DateTime = 6
-    URL = 7
-    Email = 8
-    Textarea = 9
-    Select = 10
-    IPAddress = 11
-
 
 class IQLResponse:
     """

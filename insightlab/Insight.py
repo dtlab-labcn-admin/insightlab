@@ -92,6 +92,7 @@ class API:
         self.prepare_headers()
         self.request.params = self.params.toDict()
         if self.debug:
+            print(self.request.url)
             print(self.request.params)
         req = self.request.prepare()
         session = requests.Session()
@@ -159,25 +160,38 @@ class API:
             raise Exception(f"Unexpected status: {r.status_code}, {r.reason}")
         return InsightObjects.Object(json.loads(r.text))
 
-    def update_attribute(self, object_id, attribute):
+    def update_attribute(self, object_id, attribute, append = False):
         """
-        Updates an attribute for a given object.
+        Updates an attribute's value for a given object.
 
         Args:
             object_id (str): The id of the object to update
-            attribute (Attributes): An attribute object
-        """
-        endpoint = f"/rest/insight/1.0/object/{object_id}"
-        self.request.url = self.urlBase + endpoint
-        self.request.method = "PUT"        
+            attribute (Attributes): An 'Attributes' object
+            append (bool): Default: False. If set to True, it will append the given value.
+        """  
+
+        # Build the object to replace.     
         new_attr = DotMap()
         new_attr.attributes = []
         sub_attr = DotMap()
         sub_attr.objectTypeAttributeId = attribute.objectTypeAttributeId
         sub_attr.objectAttributeValues = []
         for attr in attribute.objectAttributeValues:
-            sub_attr.objectAttributeValues.append(attr)
+            sub_attr.objectAttributeValues.append(attr)        
+        if append:
+            obj = self.load(object_id)
+            for attr in obj.parsed.attributes:
+                if attr.objectTypeAttribute.id == attribute.objectTypeAttributeId:
+                    for vals in attr.objectAttributeValues:
+                        if vals.referencedType:
+                            sub_attr.objectAttributeValues.append({"value": vals.referencedObject.id})
+                        else:
+                            sub_attr.objectAttributeValues.append({"value": vals.value})
         new_attr.attributes.append(sub_attr)
+        # need to set this afterwards because self.load will overwrite.
+        endpoint = f"/rest/insight/1.0/object/{object_id}"
+        self.request.url = self.urlBase + endpoint
+        self.request.method = "PUT" 
         self.request.data = json.dumps(new_attr.toDict())              
         if self.debug:
             print(self.request.data)
@@ -215,7 +229,7 @@ class API:
     def find_object_type_id(self, name):
         """
         Find the object type id on an object by name
-
+        
         Args:
             name (str): The name of the object to find the type.
 
@@ -244,6 +258,7 @@ class API:
     def find_object_type_attribute_id(self, object_type_name, attr_name):
         """
         Find the id of an attribute for a specific object type.
+        Note: If you already have an object loaded, you can use obj.attribute_value_by_name("Name"). It's faster as it requires not call made to the API.
 
         Args:
             object_type_name (str): The object type that has the attribute

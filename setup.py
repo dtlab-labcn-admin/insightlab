@@ -7,7 +7,7 @@ with open(path.join(this_directory, "README.md"), encoding="utf-8") as fh:
 
 setuptools.setup(
     name="insightlab",
-    version="0.3",
+    version="0.4",
     author="IDLab",
     author_email="it-admin@idlab.org",
     description="Library for interacting with Jira Cloud Insight API",
@@ -18,5 +18,9 @@ setuptools.setup(
     url="https://github.com/idlab-org/insightlab",
     packages=["insightlab"],
     classifiers=["Programming Language :: Python :: 3"],
-    install_requires=["dotmap", "requests", "jsonpickle"],
+    install_requires=[
+        "dotmap>=1.3.23", 
+        "requests>=2.25.1",
+        "jsonpickle>=2.0.0"
+        ],
 )

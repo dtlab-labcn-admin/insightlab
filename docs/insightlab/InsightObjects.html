@@ -33,44 +33,50 @@ from enum import Enum
 
 class objectTypeAttribute(Enum):
     &#34;&#34;&#34;
-    Enum to hold objectTypeAttribute. 
+    Enum to hold objectTypeAttribute.
     Ref: https://documentation.mindville.com/display/INSCLOUD/REST+API+-+Object+type+attributes
     &#34;&#34;&#34;
+
     def __str__(self):
         return str(self.value)
-    Default=0
-    Object=1
-    User=2
-    Confluence=3
-    Group=4
-    Status=7
+
+    Default = 0
+    Object = 1
+    User = 2
+    Confluence = 3
+    Group = 4
+    Status = 7
+
 
 class objectDefaultTypeAttribute(Enum):
     &#34;&#34;&#34;
     Enum to hold the default types
     &#34;&#34;&#34;
+
     def __str__(self):
-        return str(self.value)    
-    Text=0
-    Integer=1
-    Boolean=2
-    Double=3
-    Date=4
-    Time=5
-    DateTime=6
-    URL=7
-    Email=8
-    Textarea=9
-    Select=10
-    IPAddress=11
+        return str(self.value)
+
+    Text = 0
+    Integer = 1
+    Boolean = 2
+    Double = 3
+    Date = 4
+    Time = 5
+    DateTime = 6
+    URL = 7
+    Email = 8
+    Textarea = 9
+    Select = 10
+    IPAddress = 11
+
 
 class IQLResponse:
-    &#34;&#34;&#34; 
+    &#34;&#34;&#34;
     IQL Response object
 
     Args:
         raw_json (str): The raw response
-    
+
     Attributes:
         parsed (DotMap): The response in a DotMap format
         iql (str): The original IQL query
@@ -81,10 +87,11 @@ class IQLResponse:
         self.raw = raw_json
         self.parsed = DotMap(raw_json)
         self.iql = self.parsed.iql
-        self.objects = self.parsed.objectEntries  
+        self.objects = self.parsed.objectEntries
+
 
 class Attributes:
-    &#34;&#34;&#34; 
+    &#34;&#34;&#34;
     Structured object to hold attributes
 
     Args:
@@ -93,6 +100,7 @@ class Attributes:
     Attributes:
         objectAttributeValues (str): The values for the attribute
     &#34;&#34;&#34;
+
     def __init__(self, object_type_attribute_id):
         self.objectTypeAttributeId = object_type_attribute_id
         self.objectAttributeValues = []
@@ -104,11 +112,18 @@ class Attributes:
         Args:
             value (str): The value of the attribute
         &#34;&#34;&#34;
-        self.objectAttributeValues.append(
-            {
-                &#34;value&#34;: value
-            }
-        )
+        self.objectAttributeValues.append({&#34;value&#34;: value})
+    
+    def add_values(self, values):
+        &#34;&#34;&#34;
+        Adds values to an attribute
+
+        Args:
+            value (list): The values of the attribute
+        &#34;&#34;&#34;        
+        for v in values:
+            self.objectAttributeValues.append({&#34;value&#34;: v})
+
 
 class NewObject:
     &#34;&#34;&#34;
@@ -120,6 +135,7 @@ class NewObject:
     Attributes:
         attributes (Attribute): The attributes of the object
     &#34;&#34;&#34;
+
     def __init__(self, object_type_id):
         self.objectTypeId = object_type_id
         self.attributes = []
@@ -127,22 +143,25 @@ class NewObject:
     def add_attribute(self, object_type_attribute_id, value):
         &#34;&#34;&#34;
         Adds an attribute object to the newly created object.
-    
+
         Args:
             object_type_attribute_id (str): The attribute type&#39;s id.
             value (str): The value of the attribute
         &#34;&#34;&#34;
         a = Attributes(object_type_attribute_id)
-        a.add_value(value)
+        if isinstance(value, list):
+            a.add_values(value)
+        else:
+            a.add_value(value)
         self.attributes.append(a)
 
 class Object:
-    &#34;&#34;&#34; 
+    &#34;&#34;&#34;
     Base class for returning objects.
 
     Args:
         raw_json (str): The raw json data of the object
-    
+
     Attributes:
         parsed (DotMap): The object parsed in a map
         id (str): The id of the object
@@ -173,7 +192,7 @@ class Object:
         &#34;&#34;&#34;
         print(self.raw)
 
-    def attribute_value_by_name(self, name, first_found = True):
+    def attribute_value_by_name(self, name, first_found=True):
         &#34;&#34;&#34;
         Get the value of a specific attribute for the object
 
@@ -193,10 +212,10 @@ class Object:
                     return attr.objectAttributeValues
         raise Exception(f&#34;No attributes with name {name} found.&#34;)
 
-    def attribute_id_by_name(self, name, first_found = True):
-        &#34;&#34;&#34; 
+    def attribute_id_by_name(self, name, first_found=True):
+        &#34;&#34;&#34;
         Get the id of an attribute by name.
-        
+
         Args:
             name (str): The attribute to search
             first_found (bool, optional): Defaults to true, will return onlyt the first attribute found.
@@ -244,7 +263,7 @@ class Object:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Attributes:
-    &#34;&#34;&#34; 
+    &#34;&#34;&#34;
     Structured object to hold attributes
 
     Args:
@@ -253,6 +272,7 @@ class Object:
     Attributes:
         objectAttributeValues (str): The values for the attribute
     &#34;&#34;&#34;
+
     def __init__(self, object_type_attribute_id):
         self.objectTypeAttributeId = object_type_attribute_id
         self.objectAttributeValues = []
@@ -264,11 +284,17 @@ class Object:
         Args:
             value (str): The value of the attribute
         &#34;&#34;&#34;
-        self.objectAttributeValues.append(
-            {
-                &#34;value&#34;: value
-            }
-        )</code></pre>
+        self.objectAttributeValues.append({&#34;value&#34;: value})
+    
+    def add_values(self, values):
+        &#34;&#34;&#34;
+        Adds values to an attribute
+
+        Args:
+            value (list): The values of the attribute
+        &#34;&#34;&#34;        
+        for v in values:
+            self.objectAttributeValues.append({&#34;value&#34;: v})</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -293,11 +319,32 @@ class Object:
     Args:
         value (str): The value of the attribute
     &#34;&#34;&#34;
-    self.objectAttributeValues.append(
-        {
-            &#34;value&#34;: value
-        }
-    )</code></pre>
+    self.objectAttributeValues.append({&#34;value&#34;: value})</code></pre>
+</details>
+</dd>
+<dt id="insightlab.InsightObjects.Attributes.add_values"><code class="name flex">
+<span>def <span class="ident">add_values</span></span>(<span>self, values)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds values to an attribute</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>value</code></strong> :&ensp;<code>list</code></dt>
+<dd>The values of the attribute</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_values(self, values):
+    &#34;&#34;&#34;
+    Adds values to an attribute
+
+    Args:
+        value (list): The values of the attribute
+    &#34;&#34;&#34;        
+    for v in values:
+        self.objectAttributeValues.append({&#34;value&#34;: v})</code></pre>
 </details>
 </dd>
 </dl>
@@ -327,12 +374,12 @@ class Object:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class IQLResponse:
-    &#34;&#34;&#34; 
+    &#34;&#34;&#34;
     IQL Response object
 
     Args:
         raw_json (str): The raw response
-    
+
     Attributes:
         parsed (DotMap): The response in a DotMap format
         iql (str): The original IQL query
@@ -343,7 +390,7 @@ class Object:
         self.raw = raw_json
         self.parsed = DotMap(raw_json)
         self.iql = self.parsed.iql
-        self.objects = self.parsed.objectEntries  </code></pre>
+        self.objects = self.parsed.objectEntries</code></pre>
 </details>
 </dd>
 <dt id="insightlab.InsightObjects.NewObject"><code class="flex name class">
@@ -376,6 +423,7 @@ class Object:
     Attributes:
         attributes (Attribute): The attributes of the object
     &#34;&#34;&#34;
+
     def __init__(self, object_type_id):
         self.objectTypeId = object_type_id
         self.attributes = []
@@ -383,13 +431,16 @@ class Object:
     def add_attribute(self, object_type_attribute_id, value):
         &#34;&#34;&#34;
         Adds an attribute object to the newly created object.
-    
+
         Args:
             object_type_attribute_id (str): The attribute type&#39;s id.
             value (str): The value of the attribute
         &#34;&#34;&#34;
         a = Attributes(object_type_attribute_id)
-        a.add_value(value)
+        if isinstance(value, list):
+            a.add_values(value)
+        else:
+            a.add_value(value)
         self.attributes.append(a)</code></pre>
 </details>
 <h3>Methods</h3>
@@ -419,7 +470,10 @@ class Object:
         value (str): The value of the attribute
     &#34;&#34;&#34;
     a = Attributes(object_type_attribute_id)
-    a.add_value(value)
+    if isinstance(value, list):
+        a.add_values(value)
+    else:
+        a.add_value(value)
     self.attributes.append(a)</code></pre>
 </details>
 </dd>
@@ -462,12 +516,12 @@ class Object:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Object:
-    &#34;&#34;&#34; 
+    &#34;&#34;&#34;
     Base class for returning objects.
 
     Args:
         raw_json (str): The raw json data of the object
-    
+
     Attributes:
         parsed (DotMap): The object parsed in a map
         id (str): The id of the object
@@ -498,7 +552,7 @@ class Object:
         &#34;&#34;&#34;
         print(self.raw)
 
-    def attribute_value_by_name(self, name, first_found = True):
+    def attribute_value_by_name(self, name, first_found=True):
         &#34;&#34;&#34;
         Get the value of a specific attribute for the object
 
@@ -518,10 +572,10 @@ class Object:
                     return attr.objectAttributeValues
         raise Exception(f&#34;No attributes with name {name} found.&#34;)
 
-    def attribute_id_by_name(self, name, first_found = True):
-        &#34;&#34;&#34; 
+    def attribute_id_by_name(self, name, first_found=True):
+        &#34;&#34;&#34;
         Get the id of an attribute by name.
-        
+
         Args:
             name (str): The attribute to search
             first_found (bool, optional): Defaults to true, will return onlyt the first attribute found.
@@ -559,10 +613,10 @@ values (str[]): All values in an array if first_found is False</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def attribute_id_by_name(self, name, first_found = True):
-    &#34;&#34;&#34; 
+<pre><code class="python">def attribute_id_by_name(self, name, first_found=True):
+    &#34;&#34;&#34;
     Get the id of an attribute by name.
-    
+
     Args:
         name (str): The attribute to search
         first_found (bool, optional): Defaults to true, will return onlyt the first attribute found.
@@ -599,7 +653,7 @@ values (str[]): All values in an array if first_found is False</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def attribute_value_by_name(self, name, first_found = True):
+<pre><code class="python">def attribute_value_by_name(self, name, first_found=True):
     &#34;&#34;&#34;
     Get the value of a specific attribute for the object
 
@@ -652,20 +706,22 @@ values (str[]): All values in an array if first_found is False</p></div>
     &#34;&#34;&#34;
     Enum to hold the default types
     &#34;&#34;&#34;
+
     def __str__(self):
-        return str(self.value)    
-    Text=0
-    Integer=1
-    Boolean=2
-    Double=3
-    Date=4
-    Time=5
-    DateTime=6
-    URL=7
-    Email=8
-    Textarea=9
-    Select=10
-    IPAddress=11</code></pre>
+        return str(self.value)
+
+    Text = 0
+    Integer = 1
+    Boolean = 2
+    Double = 3
+    Date = 4
+    Time = 5
+    DateTime = 6
+    URL = 7
+    Email = 8
+    Textarea = 9
+    Select = 10
+    IPAddress = 11</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -736,17 +792,19 @@ Ref: <a href="https://documentation.mindville.com/display/INSCLOUD/REST+API+-+Ob
 </summary>
 <pre><code class="python">class objectTypeAttribute(Enum):
     &#34;&#34;&#34;
-    Enum to hold objectTypeAttribute. 
+    Enum to hold objectTypeAttribute.
     Ref: https://documentation.mindville.com/display/INSCLOUD/REST+API+-+Object+type+attributes
     &#34;&#34;&#34;
+
     def __str__(self):
         return str(self.value)
-    Default=0
-    Object=1
-    User=2
-    Confluence=3
-    Group=4
-    Status=7</code></pre>
+
+    Default = 0
+    Object = 1
+    User = 2
+    Confluence = 3
+    Group = 4
+    Status = 7</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -800,6 +858,7 @@ Ref: <a href="https://documentation.mindville.com/display/INSCLOUD/REST+API+-+Ob
 <h4><code><a title="insightlab.InsightObjects.Attributes" href="#insightlab.InsightObjects.Attributes">Attributes</a></code></h4>
 <ul class="">
 <li><code><a title="insightlab.InsightObjects.Attributes.add_value" href="#insightlab.InsightObjects.Attributes.add_value">add_value</a></code></li>
+<li><code><a title="insightlab.InsightObjects.Attributes.add_values" href="#insightlab.InsightObjects.Attributes.add_values">add_values</a></code></li>
 </ul>
 </li>
 <li>

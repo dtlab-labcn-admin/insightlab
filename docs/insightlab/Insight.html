@@ -32,7 +32,7 @@ import logging
 import jsonpickle
 from dotmap import DotMap
 from insightlab import InsightObjects
-    
+
 
 class API:
     &#34;&#34;&#34;
@@ -50,7 +50,7 @@ class API:
         debug (bool): Setting to true enables more verbosity
     &#34;&#34;&#34;
 
-    def __init__(self, token, objectSchemaId, debug = False):
+    def __init__(self, token, objectSchemaId, debug=False):
         self.token = token
         self.urlBase = &#34;https://insight-api.riada.io&#34;
         self.request = requests.Request()
@@ -62,31 +62,39 @@ class API:
         self.params = DotMap()
         self.debug = debug
         if self.debug:
-            self.set_debug()
-        
-    def set_debug(self):
+            self.set_debug_urllib3()
+
+    def set_debug_urllib(self):
         &#34;&#34;&#34;
         Sets the debugging for the urllib3 (requests) library.
         &#34;&#34;&#34;
         from http.client import HTTPConnection
-        log = logging.getLogger(&#39;urllib3&#39;)
+
+        log = logging.getLogger(&#34;urllib3&#34;)
         log.setLevel(logging.DEBUG)
         ch = logging.StreamHandler()
         ch.setLevel(logging.DEBUG)
         log.addHandler(ch)
         HTTPConnection.debuglevel = 1
 
-    def prepare_headers(self):                    
+    def prepare_headers(self):
         &#34;&#34;&#34;
         Prepare headers for authentication
         &#34;&#34;&#34;
         headers = {
             &#34;Authorization&#34;: f&#34;Bearer {self.token}&#34;,
-            &#34;Content-type&#34;: &#34;application/json&#34;
+            &#34;Content-type&#34;: &#34;application/json&#34;,
         }
         self.request.headers = headers
 
-    def prepare_params(self, page, resultsPerPage, includeAttributes, includeTypeAttributes, includeExtendedInfo):
+    def prepare_params(
+        self,
+        page,
+        resultsPerPage,
+        includeAttributes,
+        includeTypeAttributes,
+        includeExtendedInfo,
+    ):
         &#34;&#34;&#34;
         Sets the parameters for an IQL request
 
@@ -96,20 +104,20 @@ class API:
             includeAttributes (bool): Include the objects attributes in the result. Default: True
             includeTypeAttributes (bool): Include the object type attribute definition for every object attribute. Default: False
             includeExtendedInfo (bool): Include information if attachments and open JIRA issues exist for objects. Default: False
-        &#34;&#34;&#34;    
+        &#34;&#34;&#34;
         self.params.page = page
         self.params.resultPerPage = resultsPerPage
-        self.params.includeAttributes = includeAttributes        
+        self.params.includeAttributes = includeAttributes
         self.params.includeTypeAttributes = includeTypeAttributes
         self.params.includeExtendedInfo = includeExtendedInfo
-        self.params.objectSchemaId = self.objectSchemaId                
+        self.params.objectSchemaId = self.objectSchemaId
 
     def prepare_and_send(self):
         &#34;&#34;&#34;
         Prepare and send the cooked request
-        
+
         &#34;&#34;&#34;
-        self.prepare_headers() 
+        self.prepare_headers()
         self.request.params = self.params.toDict()
         if self.debug:
             print(self.request.params)
@@ -120,17 +128,25 @@ class API:
             print(f&#34;HTTP {r.status_code}, {r.text}&#34;)
 
         # Reset some attributes for next query
-        self.params = DotMap()        
+        self.params = DotMap()
         self.endpoint = &#34;&#34;
-        self.request = requests.Request()    
+        self.request = requests.Request()
         return r
-        
-    def iql_query(self, query, page = 1, resultsPerPage = 3000, includeAttributes = True, includeTypeAttributes = False, includeExtendedInfo = False):
+
+    def iql_query(
+        self,
+        query,
+        page=1,
+        resultsPerPage=3000,
+        includeAttributes=True,
+        includeTypeAttributes=False,
+        includeExtendedInfo=False,
+    ):
         &#34;&#34;&#34;
         Make a query using the IQL language: https://documentation.mindville.com/insight/latest/iql-insight-query-language-33467338.html
 
         Args:
-            query (str): The query to make in IQL language.        
+            query (str): The query to make in IQL language.
             page (str): The page to display for IQL requests. Default: 1
             resultsPerPage (str): Defines how many results are returned in an IQL query. Default: 3000
             includeAttributes (bool): Include the objects attributes in the result. Default: True
@@ -140,7 +156,13 @@ class API:
             InsightObjects.IQLResponse
         &#34;&#34;&#34;
         endpoint = &#34;/rest/insight/1.0/iql/objects&#34;
-        self.prepare_params(page, resultsPerPage, includeAttributes, includeTypeAttributes, includeExtendedInfo)
+        self.prepare_params(
+            page,
+            resultsPerPage,
+            includeAttributes,
+            includeTypeAttributes,
+            includeExtendedInfo,
+        )
         self.params.iql = query
         self.request.url = self.urlBase + endpoint
         self.request.method = &#34;GET&#34;
@@ -153,43 +175,45 @@ class API:
 
         Args:
             id (str): The id of the object to load.
-        
+
         Returns:
             InsightObjects.Object
         &#34;&#34;&#34;
-        endpoint = f&#34;/rest/insight/1.0/object/{id}&#34;            
+        endpoint = f&#34;/rest/insight/1.0/object/{id}&#34;
         self.request.url = self.urlBase + endpoint
         self.request.method = &#34;GET&#34;
         r = self.prepare_and_send()
         if not r.ok:
-            raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)        
+            raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)
         return InsightObjects.Object(json.loads(r.text))
 
-    def update_attribute(self, object_id, attribute_id, value):
+    def update_attribute(self, object_id, attribute):
         &#34;&#34;&#34;
         Updates an attribute for a given object.
 
         Args:
             object_id (str): The id of the object to update
-            attribute_id (str): The id of the attribute to update
-            value (str): The new value for the attribute
+            attribute (Attributes): An attribute object
         &#34;&#34;&#34;
-        endpoint = f&#34;/rest/insight/1.0/object/{object_id}&#34;        
+        endpoint = f&#34;/rest/insight/1.0/object/{object_id}&#34;
         self.request.url = self.urlBase + endpoint
         self.request.method = &#34;PUT&#34;        
-        sub_attr = DotMap()
-        sub_attr.objectTypeAttributeId = attribute_id
-        sub_attr.objectAttributeValues = [{&#34;value&#34;: value}]
         new_attr = DotMap()
-        new_attr.attributes = [sub_attr]        
-        self.request.data = json.dumps(new_attr.toDict())
+        new_attr.attributes = []
+        sub_attr = DotMap()
+        sub_attr.objectTypeAttributeId = attribute.objectTypeAttributeId
+        sub_attr.objectAttributeValues = []
+        for attr in attribute.objectAttributeValues:
+            sub_attr.objectAttributeValues.append(attr)
+        new_attr.attributes.append(sub_attr)
+        self.request.data = json.dumps(new_attr.toDict())              
         if self.debug:
             print(self.request.data)
         r = self.prepare_and_send()
         if not r.ok:
             raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)
 
-    def find_object(self, object_name, object_type, resultsPerPage = 3000):
+    def find_object(self, object_name, object_type, resultsPerPage=3000):
         &#34;&#34;&#34;
         Find an Insight object by name.
 
@@ -207,10 +231,13 @@ class API:
             &gt;&gt;&gt; print(myserver.name)
             New Server
         &#34;&#34;&#34;
-        returned_objects = self.iql_query(f&#34;objectType IN objectTypeAndChildren(\&#34;{object_type}\&#34;)&#34;, resultsPerPage=resultsPerPage)
-        for obj in returned_objects.objects:  
+        returned_objects = self.iql_query(
+            f&#39;objectType IN objectTypeAndChildren(&#34;{object_type}&#34;)&#39;,
+            resultsPerPage=resultsPerPage,
+        )
+        for obj in returned_objects.objects:
             if obj.name == object_name:
-                return self.load(obj.id)                
+                return self.load(obj.id)
         raise Exception(f&#34;No object with name &#39;{object_name}&#39; found.&#34;)
 
     def find_object_type_id(self, name):
@@ -229,16 +256,18 @@ class API:
             &gt;&gt;&gt; print(server_type)
             245
         &#34;&#34;&#34;
-        endpoint = f&#34;/rest/insight/1.0/objectschema/{self.objectSchemaId}/objecttypes/flat&#34;            
+        endpoint = (
+            f&#34;/rest/insight/1.0/objectschema/{self.objectSchemaId}/objecttypes/flat&#34;
+        )
         self.request.url = self.urlBase + endpoint
         self.request.method = &#34;GET&#34;
         r = self.prepare_and_send()
         if not r.ok:
-            raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)        
+            raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)
         for t in json.loads(r.text):
             if t[&#34;name&#34;] == name:
                 return t[&#34;id&#34;]
-        raise Exception(f&#34;No object type with name {name} found.&#34;) 
+        raise Exception(f&#34;No object type with name {name} found.&#34;)
 
     def find_object_type_attribute_id(self, object_type_name, attr_name):
         &#34;&#34;&#34;
@@ -255,21 +284,21 @@ class API:
             &gt;&gt;&gt; i = Insight.API(&#34;12345abcd&#34;, &#34;42&#34;)
             &gt;&gt;&gt; attrid = i.find_object_type_attribute_id(&#34;Server&#34;, &#34;Name&#34;)
             &gt;&gt;&gt; print(attrid)
-            123            
+            123
         &#34;&#34;&#34;
         obj_id = self.find_object_type_id(object_type_name)
-        endpoint = f&#34;/rest/insight/1.0/objecttype/{obj_id}/attributes&#34;            
+        endpoint = f&#34;/rest/insight/1.0/objecttype/{obj_id}/attributes&#34;
         self.request.url = self.urlBase + endpoint
         self.request.method = &#34;GET&#34;
         r = self.prepare_and_send()
         if not r.ok:
-            raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)   
+            raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)
         if self.debug:
             print(r.text)
         for t in json.loads(r.text):
             if t[&#34;name&#34;] == attr_name:
                 return t[&#34;id&#34;]
-        raise Exception(f&#34;No object type with name {attr_name} found.&#34;)                    
+        raise Exception(f&#34;No object type with name {attr_name} found.&#34;)
 
     def delete(self, object_id):
         &#34;&#34;&#34;
@@ -278,7 +307,7 @@ class API:
         Args:
             object_id (str): The id of the object to delete
         &#34;&#34;&#34;
-        endpoint = f&#34;/rest/insight/1.0/object/{object_id}&#34;            
+        endpoint = f&#34;/rest/insight/1.0/object/{object_id}&#34;
         self.request.url = self.urlBase + endpoint
         self.request.method = &#34;DELETE&#34;
         r = self.prepare_and_send()
@@ -299,14 +328,16 @@ class API:
             &gt;&gt;&gt; newobj = InsightObjects.NewObject(obj_type)
             &gt;&gt;&gt; newobj.add_attribute(name_attr, &#34;New Server&#34;)
             &gt;&gt;&gt; i.create(newobj)
-        &#34;&#34;&#34;        
-        endpoint = f&#34;/rest/insight/1.0/object/create&#34;            
+        &#34;&#34;&#34;
+        endpoint = f&#34;/rest/insight/1.0/object/create&#34;
         self.request.url = self.urlBase + endpoint
         self.request.method = &#34;POST&#34;
-        self.request.data = jsonpickle.encode(new_object, unpicklable=False, make_refs=False)
+        self.request.data = jsonpickle.encode(
+            new_object, unpicklable=False, make_refs=False
+        )
         r = self.prepare_and_send()
         if not r.ok:
-            raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)        </code></pre>
+            raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -364,7 +395,7 @@ class API:
         debug (bool): Setting to true enables more verbosity
     &#34;&#34;&#34;
 
-    def __init__(self, token, objectSchemaId, debug = False):
+    def __init__(self, token, objectSchemaId, debug=False):
         self.token = token
         self.urlBase = &#34;https://insight-api.riada.io&#34;
         self.request = requests.Request()
@@ -376,31 +407,39 @@ class API:
         self.params = DotMap()
         self.debug = debug
         if self.debug:
-            self.set_debug()
-        
-    def set_debug(self):
+            self.set_debug_urllib3()
+
+    def set_debug_urllib(self):
         &#34;&#34;&#34;
         Sets the debugging for the urllib3 (requests) library.
         &#34;&#34;&#34;
         from http.client import HTTPConnection
-        log = logging.getLogger(&#39;urllib3&#39;)
+
+        log = logging.getLogger(&#34;urllib3&#34;)
         log.setLevel(logging.DEBUG)
         ch = logging.StreamHandler()
         ch.setLevel(logging.DEBUG)
         log.addHandler(ch)
         HTTPConnection.debuglevel = 1
 
-    def prepare_headers(self):                    
+    def prepare_headers(self):
         &#34;&#34;&#34;
         Prepare headers for authentication
         &#34;&#34;&#34;
         headers = {
             &#34;Authorization&#34;: f&#34;Bearer {self.token}&#34;,
-            &#34;Content-type&#34;: &#34;application/json&#34;
+            &#34;Content-type&#34;: &#34;application/json&#34;,
         }
         self.request.headers = headers
 
-    def prepare_params(self, page, resultsPerPage, includeAttributes, includeTypeAttributes, includeExtendedInfo):
+    def prepare_params(
+        self,
+        page,
+        resultsPerPage,
+        includeAttributes,
+        includeTypeAttributes,
+        includeExtendedInfo,
+    ):
         &#34;&#34;&#34;
         Sets the parameters for an IQL request
 
@@ -410,20 +449,20 @@ class API:
             includeAttributes (bool): Include the objects attributes in the result. Default: True
             includeTypeAttributes (bool): Include the object type attribute definition for every object attribute. Default: False
             includeExtendedInfo (bool): Include information if attachments and open JIRA issues exist for objects. Default: False
-        &#34;&#34;&#34;    
+        &#34;&#34;&#34;
         self.params.page = page
         self.params.resultPerPage = resultsPerPage
-        self.params.includeAttributes = includeAttributes        
+        self.params.includeAttributes = includeAttributes
         self.params.includeTypeAttributes = includeTypeAttributes
         self.params.includeExtendedInfo = includeExtendedInfo
-        self.params.objectSchemaId = self.objectSchemaId                
+        self.params.objectSchemaId = self.objectSchemaId
 
     def prepare_and_send(self):
         &#34;&#34;&#34;
         Prepare and send the cooked request
-        
+
         &#34;&#34;&#34;
-        self.prepare_headers() 
+        self.prepare_headers()
         self.request.params = self.params.toDict()
         if self.debug:
             print(self.request.params)
@@ -434,17 +473,25 @@ class API:
             print(f&#34;HTTP {r.status_code}, {r.text}&#34;)
 
         # Reset some attributes for next query
-        self.params = DotMap()        
+        self.params = DotMap()
         self.endpoint = &#34;&#34;
-        self.request = requests.Request()    
+        self.request = requests.Request()
         return r
-        
-    def iql_query(self, query, page = 1, resultsPerPage = 3000, includeAttributes = True, includeTypeAttributes = False, includeExtendedInfo = False):
+
+    def iql_query(
+        self,
+        query,
+        page=1,
+        resultsPerPage=3000,
+        includeAttributes=True,
+        includeTypeAttributes=False,
+        includeExtendedInfo=False,
+    ):
         &#34;&#34;&#34;
         Make a query using the IQL language: https://documentation.mindville.com/insight/latest/iql-insight-query-language-33467338.html
 
         Args:
-            query (str): The query to make in IQL language.        
+            query (str): The query to make in IQL language.
             page (str): The page to display for IQL requests. Default: 1
             resultsPerPage (str): Defines how many results are returned in an IQL query. Default: 3000
             includeAttributes (bool): Include the objects attributes in the result. Default: True
@@ -454,7 +501,13 @@ class API:
             InsightObjects.IQLResponse
         &#34;&#34;&#34;
         endpoint = &#34;/rest/insight/1.0/iql/objects&#34;
-        self.prepare_params(page, resultsPerPage, includeAttributes, includeTypeAttributes, includeExtendedInfo)
+        self.prepare_params(
+            page,
+            resultsPerPage,
+            includeAttributes,
+            includeTypeAttributes,
+            includeExtendedInfo,
+        )
         self.params.iql = query
         self.request.url = self.urlBase + endpoint
         self.request.method = &#34;GET&#34;
@@ -467,43 +520,45 @@ class API:
 
         Args:
             id (str): The id of the object to load.
-        
+
         Returns:
             InsightObjects.Object
         &#34;&#34;&#34;
-        endpoint = f&#34;/rest/insight/1.0/object/{id}&#34;            
+        endpoint = f&#34;/rest/insight/1.0/object/{id}&#34;
         self.request.url = self.urlBase + endpoint
         self.request.method = &#34;GET&#34;
         r = self.prepare_and_send()
         if not r.ok:
-            raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)        
+            raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)
         return InsightObjects.Object(json.loads(r.text))
 
-    def update_attribute(self, object_id, attribute_id, value):
+    def update_attribute(self, object_id, attribute):
         &#34;&#34;&#34;
         Updates an attribute for a given object.
 
         Args:
             object_id (str): The id of the object to update
-            attribute_id (str): The id of the attribute to update
-            value (str): The new value for the attribute
+            attribute (Attributes): An attribute object
         &#34;&#34;&#34;
-        endpoint = f&#34;/rest/insight/1.0/object/{object_id}&#34;        
+        endpoint = f&#34;/rest/insight/1.0/object/{object_id}&#34;
         self.request.url = self.urlBase + endpoint
         self.request.method = &#34;PUT&#34;        
-        sub_attr = DotMap()
-        sub_attr.objectTypeAttributeId = attribute_id
-        sub_attr.objectAttributeValues = [{&#34;value&#34;: value}]
         new_attr = DotMap()
-        new_attr.attributes = [sub_attr]        
-        self.request.data = json.dumps(new_attr.toDict())
+        new_attr.attributes = []
+        sub_attr = DotMap()
+        sub_attr.objectTypeAttributeId = attribute.objectTypeAttributeId
+        sub_attr.objectAttributeValues = []
+        for attr in attribute.objectAttributeValues:
+            sub_attr.objectAttributeValues.append(attr)
+        new_attr.attributes.append(sub_attr)
+        self.request.data = json.dumps(new_attr.toDict())              
         if self.debug:
             print(self.request.data)
         r = self.prepare_and_send()
         if not r.ok:
             raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)
 
-    def find_object(self, object_name, object_type, resultsPerPage = 3000):
+    def find_object(self, object_name, object_type, resultsPerPage=3000):
         &#34;&#34;&#34;
         Find an Insight object by name.
 
@@ -521,10 +576,13 @@ class API:
             &gt;&gt;&gt; print(myserver.name)
             New Server
         &#34;&#34;&#34;
-        returned_objects = self.iql_query(f&#34;objectType IN objectTypeAndChildren(\&#34;{object_type}\&#34;)&#34;, resultsPerPage=resultsPerPage)
-        for obj in returned_objects.objects:  
+        returned_objects = self.iql_query(
+            f&#39;objectType IN objectTypeAndChildren(&#34;{object_type}&#34;)&#39;,
+            resultsPerPage=resultsPerPage,
+        )
+        for obj in returned_objects.objects:
             if obj.name == object_name:
-                return self.load(obj.id)                
+                return self.load(obj.id)
         raise Exception(f&#34;No object with name &#39;{object_name}&#39; found.&#34;)
 
     def find_object_type_id(self, name):
@@ -543,16 +601,18 @@ class API:
             &gt;&gt;&gt; print(server_type)
             245
         &#34;&#34;&#34;
-        endpoint = f&#34;/rest/insight/1.0/objectschema/{self.objectSchemaId}/objecttypes/flat&#34;            
+        endpoint = (
+            f&#34;/rest/insight/1.0/objectschema/{self.objectSchemaId}/objecttypes/flat&#34;
+        )
         self.request.url = self.urlBase + endpoint
         self.request.method = &#34;GET&#34;
         r = self.prepare_and_send()
         if not r.ok:
-            raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)        
+            raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)
         for t in json.loads(r.text):
             if t[&#34;name&#34;] == name:
                 return t[&#34;id&#34;]
-        raise Exception(f&#34;No object type with name {name} found.&#34;) 
+        raise Exception(f&#34;No object type with name {name} found.&#34;)
 
     def find_object_type_attribute_id(self, object_type_name, attr_name):
         &#34;&#34;&#34;
@@ -569,21 +629,21 @@ class API:
             &gt;&gt;&gt; i = Insight.API(&#34;12345abcd&#34;, &#34;42&#34;)
             &gt;&gt;&gt; attrid = i.find_object_type_attribute_id(&#34;Server&#34;, &#34;Name&#34;)
             &gt;&gt;&gt; print(attrid)
-            123            
+            123
         &#34;&#34;&#34;
         obj_id = self.find_object_type_id(object_type_name)
-        endpoint = f&#34;/rest/insight/1.0/objecttype/{obj_id}/attributes&#34;            
+        endpoint = f&#34;/rest/insight/1.0/objecttype/{obj_id}/attributes&#34;
         self.request.url = self.urlBase + endpoint
         self.request.method = &#34;GET&#34;
         r = self.prepare_and_send()
         if not r.ok:
-            raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)   
+            raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)
         if self.debug:
             print(r.text)
         for t in json.loads(r.text):
             if t[&#34;name&#34;] == attr_name:
                 return t[&#34;id&#34;]
-        raise Exception(f&#34;No object type with name {attr_name} found.&#34;)                    
+        raise Exception(f&#34;No object type with name {attr_name} found.&#34;)
 
     def delete(self, object_id):
         &#34;&#34;&#34;
@@ -592,7 +652,7 @@ class API:
         Args:
             object_id (str): The id of the object to delete
         &#34;&#34;&#34;
-        endpoint = f&#34;/rest/insight/1.0/object/{object_id}&#34;            
+        endpoint = f&#34;/rest/insight/1.0/object/{object_id}&#34;
         self.request.url = self.urlBase + endpoint
         self.request.method = &#34;DELETE&#34;
         r = self.prepare_and_send()
@@ -613,14 +673,16 @@ class API:
             &gt;&gt;&gt; newobj = InsightObjects.NewObject(obj_type)
             &gt;&gt;&gt; newobj.add_attribute(name_attr, &#34;New Server&#34;)
             &gt;&gt;&gt; i.create(newobj)
-        &#34;&#34;&#34;        
-        endpoint = f&#34;/rest/insight/1.0/object/create&#34;            
+        &#34;&#34;&#34;
+        endpoint = f&#34;/rest/insight/1.0/object/create&#34;
         self.request.url = self.urlBase + endpoint
         self.request.method = &#34;POST&#34;
-        self.request.data = jsonpickle.encode(new_object, unpicklable=False, make_refs=False)
+        self.request.data = jsonpickle.encode(
+            new_object, unpicklable=False, make_refs=False
+        )
         r = self.prepare_and_send()
         if not r.ok:
-            raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)        </code></pre>
+            raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -660,14 +722,16 @@ class API:
         &gt;&gt;&gt; newobj = InsightObjects.NewObject(obj_type)
         &gt;&gt;&gt; newobj.add_attribute(name_attr, &#34;New Server&#34;)
         &gt;&gt;&gt; i.create(newobj)
-    &#34;&#34;&#34;        
-    endpoint = f&#34;/rest/insight/1.0/object/create&#34;            
+    &#34;&#34;&#34;
+    endpoint = f&#34;/rest/insight/1.0/object/create&#34;
     self.request.url = self.urlBase + endpoint
     self.request.method = &#34;POST&#34;
-    self.request.data = jsonpickle.encode(new_object, unpicklable=False, make_refs=False)
+    self.request.data = jsonpickle.encode(
+        new_object, unpicklable=False, make_refs=False
+    )
     r = self.prepare_and_send()
     if not r.ok:
-        raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)        </code></pre>
+        raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="insightlab.Insight.API.delete"><code class="name flex">
@@ -691,7 +755,7 @@ class API:
     Args:
         object_id (str): The id of the object to delete
     &#34;&#34;&#34;
-    endpoint = f&#34;/rest/insight/1.0/object/{object_id}&#34;            
+    endpoint = f&#34;/rest/insight/1.0/object/{object_id}&#34;
     self.request.url = self.urlBase + endpoint
     self.request.method = &#34;DELETE&#34;
     r = self.prepare_and_send()
@@ -725,7 +789,7 @@ New Server
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def find_object(self, object_name, object_type, resultsPerPage = 3000):
+<pre><code class="python">def find_object(self, object_name, object_type, resultsPerPage=3000):
     &#34;&#34;&#34;
     Find an Insight object by name.
 
@@ -743,10 +807,13 @@ New Server
         &gt;&gt;&gt; print(myserver.name)
         New Server
     &#34;&#34;&#34;
-    returned_objects = self.iql_query(f&#34;objectType IN objectTypeAndChildren(\&#34;{object_type}\&#34;)&#34;, resultsPerPage=resultsPerPage)
-    for obj in returned_objects.objects:  
+    returned_objects = self.iql_query(
+        f&#39;objectType IN objectTypeAndChildren(&#34;{object_type}&#34;)&#39;,
+        resultsPerPage=resultsPerPage,
+    )
+    for obj in returned_objects.objects:
         if obj.name == object_name:
-            return self.load(obj.id)                
+            return self.load(obj.id)
     raise Exception(f&#34;No object with name &#39;{object_name}&#39; found.&#34;)</code></pre>
 </details>
 </dd>
@@ -789,21 +856,21 @@ New Server
         &gt;&gt;&gt; i = Insight.API(&#34;12345abcd&#34;, &#34;42&#34;)
         &gt;&gt;&gt; attrid = i.find_object_type_attribute_id(&#34;Server&#34;, &#34;Name&#34;)
         &gt;&gt;&gt; print(attrid)
-        123            
+        123
     &#34;&#34;&#34;
     obj_id = self.find_object_type_id(object_type_name)
-    endpoint = f&#34;/rest/insight/1.0/objecttype/{obj_id}/attributes&#34;            
+    endpoint = f&#34;/rest/insight/1.0/objecttype/{obj_id}/attributes&#34;
     self.request.url = self.urlBase + endpoint
     self.request.method = &#34;GET&#34;
     r = self.prepare_and_send()
     if not r.ok:
-        raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)   
+        raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)
     if self.debug:
         print(r.text)
     for t in json.loads(r.text):
         if t[&#34;name&#34;] == attr_name:
             return t[&#34;id&#34;]
-    raise Exception(f&#34;No object type with name {attr_name} found.&#34;)                    </code></pre>
+    raise Exception(f&#34;No object type with name {attr_name} found.&#34;)</code></pre>
 </details>
 </dd>
 <dt id="insightlab.Insight.API.find_object_type_id"><code class="name flex">
@@ -847,16 +914,18 @@ New Server
         &gt;&gt;&gt; print(server_type)
         245
     &#34;&#34;&#34;
-    endpoint = f&#34;/rest/insight/1.0/objectschema/{self.objectSchemaId}/objecttypes/flat&#34;            
+    endpoint = (
+        f&#34;/rest/insight/1.0/objectschema/{self.objectSchemaId}/objecttypes/flat&#34;
+    )
     self.request.url = self.urlBase + endpoint
     self.request.method = &#34;GET&#34;
     r = self.prepare_and_send()
     if not r.ok:
-        raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)        
+        raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)
     for t in json.loads(r.text):
         if t[&#34;name&#34;] == name:
             return t[&#34;id&#34;]
-    raise Exception(f&#34;No object type with name {name} found.&#34;) </code></pre>
+    raise Exception(f&#34;No object type with name {name} found.&#34;)</code></pre>
 </details>
 </dd>
 <dt id="insightlab.Insight.API.iql_query"><code class="name flex">
@@ -867,8 +936,7 @@ New Server
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>query</code></strong> :&ensp;<code>str</code></dt>
-<dd>The query to make in IQL language.
-</dd>
+<dd>The query to make in IQL language.</dd>
 <dt><strong><code>page</code></strong> :&ensp;<code>str</code></dt>
 <dd>The page to display for IQL requests. Default: 1</dd>
 <dt><strong><code>resultsPerPage</code></strong> :&ensp;<code>str</code></dt>
@@ -886,12 +954,20 @@ New Server
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def iql_query(self, query, page = 1, resultsPerPage = 3000, includeAttributes = True, includeTypeAttributes = False, includeExtendedInfo = False):
+<pre><code class="python">def iql_query(
+    self,
+    query,
+    page=1,
+    resultsPerPage=3000,
+    includeAttributes=True,
+    includeTypeAttributes=False,
+    includeExtendedInfo=False,
+):
     &#34;&#34;&#34;
     Make a query using the IQL language: https://documentation.mindville.com/insight/latest/iql-insight-query-language-33467338.html
 
     Args:
-        query (str): The query to make in IQL language.        
+        query (str): The query to make in IQL language.
         page (str): The page to display for IQL requests. Default: 1
         resultsPerPage (str): Defines how many results are returned in an IQL query. Default: 3000
         includeAttributes (bool): Include the objects attributes in the result. Default: True
@@ -901,7 +977,13 @@ New Server
         InsightObjects.IQLResponse
     &#34;&#34;&#34;
     endpoint = &#34;/rest/insight/1.0/iql/objects&#34;
-    self.prepare_params(page, resultsPerPage, includeAttributes, includeTypeAttributes, includeExtendedInfo)
+    self.prepare_params(
+        page,
+        resultsPerPage,
+        includeAttributes,
+        includeTypeAttributes,
+        includeExtendedInfo,
+    )
     self.params.iql = query
     self.request.url = self.urlBase + endpoint
     self.request.method = &#34;GET&#34;
@@ -931,16 +1013,16 @@ New Server
 
     Args:
         id (str): The id of the object to load.
-    
+
     Returns:
         InsightObjects.Object
     &#34;&#34;&#34;
-    endpoint = f&#34;/rest/insight/1.0/object/{id}&#34;            
+    endpoint = f&#34;/rest/insight/1.0/object/{id}&#34;
     self.request.url = self.urlBase + endpoint
     self.request.method = &#34;GET&#34;
     r = self.prepare_and_send()
     if not r.ok:
-        raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)        
+        raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)
     return InsightObjects.Object(json.loads(r.text))</code></pre>
 </details>
 </dd>
@@ -956,9 +1038,9 @@ New Server
 <pre><code class="python">def prepare_and_send(self):
     &#34;&#34;&#34;
     Prepare and send the cooked request
-    
+
     &#34;&#34;&#34;
-    self.prepare_headers() 
+    self.prepare_headers()
     self.request.params = self.params.toDict()
     if self.debug:
         print(self.request.params)
@@ -969,9 +1051,9 @@ New Server
         print(f&#34;HTTP {r.status_code}, {r.text}&#34;)
 
     # Reset some attributes for next query
-    self.params = DotMap()        
+    self.params = DotMap()
     self.endpoint = &#34;&#34;
-    self.request = requests.Request()    
+    self.request = requests.Request()
     return r</code></pre>
 </details>
 </dd>
@@ -984,13 +1066,13 @@ New Server
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def prepare_headers(self):                    
+<pre><code class="python">def prepare_headers(self):
     &#34;&#34;&#34;
     Prepare headers for authentication
     &#34;&#34;&#34;
     headers = {
         &#34;Authorization&#34;: f&#34;Bearer {self.token}&#34;,
-        &#34;Content-type&#34;: &#34;application/json&#34;
+        &#34;Content-type&#34;: &#34;application/json&#34;,
     }
     self.request.headers = headers</code></pre>
 </details>
@@ -1017,7 +1099,14 @@ New Server
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def prepare_params(self, page, resultsPerPage, includeAttributes, includeTypeAttributes, includeExtendedInfo):
+<pre><code class="python">def prepare_params(
+    self,
+    page,
+    resultsPerPage,
+    includeAttributes,
+    includeTypeAttributes,
+    includeExtendedInfo,
+):
     &#34;&#34;&#34;
     Sets the parameters for an IQL request
 
@@ -1027,17 +1116,17 @@ New Server
         includeAttributes (bool): Include the objects attributes in the result. Default: True
         includeTypeAttributes (bool): Include the object type attribute definition for every object attribute. Default: False
         includeExtendedInfo (bool): Include information if attachments and open JIRA issues exist for objects. Default: False
-    &#34;&#34;&#34;    
+    &#34;&#34;&#34;
     self.params.page = page
     self.params.resultPerPage = resultsPerPage
-    self.params.includeAttributes = includeAttributes        
+    self.params.includeAttributes = includeAttributes
     self.params.includeTypeAttributes = includeTypeAttributes
     self.params.includeExtendedInfo = includeExtendedInfo
-    self.params.objectSchemaId = self.objectSchemaId                </code></pre>
+    self.params.objectSchemaId = self.objectSchemaId</code></pre>
 </details>
 </dd>
-<dt id="insightlab.Insight.API.set_debug"><code class="name flex">
-<span>def <span class="ident">set_debug</span></span>(<span>self)</span>
+<dt id="insightlab.Insight.API.set_debug_urllib"><code class="name flex">
+<span>def <span class="ident">set_debug_urllib</span></span>(<span>self)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Sets the debugging for the urllib3 (requests) library.</p></div>
@@ -1045,12 +1134,13 @@ New Server
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def set_debug(self):
+<pre><code class="python">def set_debug_urllib(self):
     &#34;&#34;&#34;
     Sets the debugging for the urllib3 (requests) library.
     &#34;&#34;&#34;
     from http.client import HTTPConnection
-    log = logging.getLogger(&#39;urllib3&#39;)
+
+    log = logging.getLogger(&#34;urllib3&#34;)
     log.setLevel(logging.DEBUG)
     ch = logging.StreamHandler()
     ch.setLevel(logging.DEBUG)
@@ -1059,7 +1149,7 @@ New Server
 </details>
 </dd>
 <dt id="insightlab.Insight.API.update_attribute"><code class="name flex">
-<span>def <span class="ident">update_attribute</span></span>(<span>self, object_id, attribute_id, value)</span>
+<span>def <span class="ident">update_attribute</span></span>(<span>self, object_id, attribute)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Updates an attribute for a given object.</p>
@@ -1067,33 +1157,33 @@ New Server
 <dl>
 <dt><strong><code>object_id</code></strong> :&ensp;<code>str</code></dt>
 <dd>The id of the object to update</dd>
-<dt><strong><code>attribute_id</code></strong> :&ensp;<code>str</code></dt>
-<dd>The id of the attribute to update</dd>
-<dt><strong><code>value</code></strong> :&ensp;<code>str</code></dt>
-<dd>The new value for the attribute</dd>
+<dt><strong><code>attribute</code></strong> :&ensp;<code>Attributes</code></dt>
+<dd>An attribute object</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def update_attribute(self, object_id, attribute_id, value):
+<pre><code class="python">def update_attribute(self, object_id, attribute):
     &#34;&#34;&#34;
     Updates an attribute for a given object.
 
     Args:
         object_id (str): The id of the object to update
-        attribute_id (str): The id of the attribute to update
-        value (str): The new value for the attribute
+        attribute (Attributes): An attribute object
     &#34;&#34;&#34;
-    endpoint = f&#34;/rest/insight/1.0/object/{object_id}&#34;        
+    endpoint = f&#34;/rest/insight/1.0/object/{object_id}&#34;
     self.request.url = self.urlBase + endpoint
     self.request.method = &#34;PUT&#34;        
-    sub_attr = DotMap()
-    sub_attr.objectTypeAttributeId = attribute_id
-    sub_attr.objectAttributeValues = [{&#34;value&#34;: value}]
     new_attr = DotMap()
-    new_attr.attributes = [sub_attr]        
-    self.request.data = json.dumps(new_attr.toDict())
+    new_attr.attributes = []
+    sub_attr = DotMap()
+    sub_attr.objectTypeAttributeId = attribute.objectTypeAttributeId
+    sub_attr.objectAttributeValues = []
+    for attr in attribute.objectAttributeValues:
+        sub_attr.objectAttributeValues.append(attr)
+    new_attr.attributes.append(sub_attr)
+    self.request.data = json.dumps(new_attr.toDict())              
     if self.debug:
         print(self.request.data)
     r = self.prepare_and_send()
@@ -1132,7 +1222,7 @@ New Server
 <li><code><a title="insightlab.Insight.API.prepare_and_send" href="#insightlab.Insight.API.prepare_and_send">prepare_and_send</a></code></li>
 <li><code><a title="insightlab.Insight.API.prepare_headers" href="#insightlab.Insight.API.prepare_headers">prepare_headers</a></code></li>
 <li><code><a title="insightlab.Insight.API.prepare_params" href="#insightlab.Insight.API.prepare_params">prepare_params</a></code></li>
-<li><code><a title="insightlab.Insight.API.set_debug" href="#insightlab.Insight.API.set_debug">set_debug</a></code></li>
+<li><code><a title="insightlab.Insight.API.set_debug_urllib" href="#insightlab.Insight.API.set_debug_urllib">set_debug_urllib</a></code></li>
 <li><code><a title="insightlab.Insight.API.update_attribute" href="#insightlab.Insight.API.update_attribute">update_attribute</a></code></li>
 </ul>
 </li>

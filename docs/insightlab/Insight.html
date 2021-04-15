@@ -120,6 +120,7 @@ class API:
         self.prepare_headers()
         self.request.params = self.params.toDict()
         if self.debug:
+            print(self.request.url)
             print(self.request.params)
         req = self.request.prepare()
         session = requests.Session()
@@ -187,25 +188,38 @@ class API:
             raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)
         return InsightObjects.Object(json.loads(r.text))
 
-    def update_attribute(self, object_id, attribute):
+    def update_attribute(self, object_id, attribute, append = False):
         &#34;&#34;&#34;
-        Updates an attribute for a given object.
+        Updates an attribute&#39;s value for a given object.
 
         Args:
             object_id (str): The id of the object to update
-            attribute (Attributes): An attribute object
-        &#34;&#34;&#34;
-        endpoint = f&#34;/rest/insight/1.0/object/{object_id}&#34;
-        self.request.url = self.urlBase + endpoint
-        self.request.method = &#34;PUT&#34;        
+            attribute (Attributes): An &#39;Attributes&#39; object
+            append (bool): Default: False. If set to True, it will append the given value.
+        &#34;&#34;&#34;  
+
+        # Build the object to replace.     
         new_attr = DotMap()
         new_attr.attributes = []
         sub_attr = DotMap()
         sub_attr.objectTypeAttributeId = attribute.objectTypeAttributeId
         sub_attr.objectAttributeValues = []
         for attr in attribute.objectAttributeValues:
-            sub_attr.objectAttributeValues.append(attr)
+            sub_attr.objectAttributeValues.append(attr)        
+        if append:
+            obj = self.load(object_id)
+            for attr in obj.parsed.attributes:
+                if attr.objectTypeAttribute.id == attribute.objectTypeAttributeId:
+                    for vals in attr.objectAttributeValues:
+                        if vals.referencedType:
+                            sub_attr.objectAttributeValues.append({&#34;value&#34;: vals.referencedObject.id})
+                        else:
+                            sub_attr.objectAttributeValues.append({&#34;value&#34;: vals.value})
         new_attr.attributes.append(sub_attr)
+        # need to set this afterwards because self.load will overwrite.
+        endpoint = f&#34;/rest/insight/1.0/object/{object_id}&#34;
+        self.request.url = self.urlBase + endpoint
+        self.request.method = &#34;PUT&#34; 
         self.request.data = json.dumps(new_attr.toDict())              
         if self.debug:
             print(self.request.data)
@@ -465,6 +479,7 @@ class API:
         self.prepare_headers()
         self.request.params = self.params.toDict()
         if self.debug:
+            print(self.request.url)
             print(self.request.params)
         req = self.request.prepare()
         session = requests.Session()
@@ -532,25 +547,38 @@ class API:
             raise Exception(f&#34;Unexpected status: {r.status_code}, {r.reason}&#34;)
         return InsightObjects.Object(json.loads(r.text))
 
-    def update_attribute(self, object_id, attribute):
+    def update_attribute(self, object_id, attribute, append = False):
         &#34;&#34;&#34;
-        Updates an attribute for a given object.
+        Updates an attribute&#39;s value for a given object.
 
         Args:
             object_id (str): The id of the object to update
-            attribute (Attributes): An attribute object
-        &#34;&#34;&#34;
-        endpoint = f&#34;/rest/insight/1.0/object/{object_id}&#34;
-        self.request.url = self.urlBase + endpoint
-        self.request.method = &#34;PUT&#34;        
+            attribute (Attributes): An &#39;Attributes&#39; object
+            append (bool): Default: False. If set to True, it will append the given value.
+        &#34;&#34;&#34;  
+
+        # Build the object to replace.     
         new_attr = DotMap()
         new_attr.attributes = []
         sub_attr = DotMap()
         sub_attr.objectTypeAttributeId = attribute.objectTypeAttributeId
         sub_attr.objectAttributeValues = []
         for attr in attribute.objectAttributeValues:
-            sub_attr.objectAttributeValues.append(attr)
+            sub_attr.objectAttributeValues.append(attr)        
+        if append:
+            obj = self.load(object_id)
+            for attr in obj.parsed.attributes:
+                if attr.objectTypeAttribute.id == attribute.objectTypeAttributeId:
+                    for vals in attr.objectAttributeValues:
+                        if vals.referencedType:
+                            sub_attr.objectAttributeValues.append({&#34;value&#34;: vals.referencedObject.id})
+                        else:
+                            sub_attr.objectAttributeValues.append({&#34;value&#34;: vals.value})
         new_attr.attributes.append(sub_attr)
+        # need to set this afterwards because self.load will overwrite.
+        endpoint = f&#34;/rest/insight/1.0/object/{object_id}&#34;
+        self.request.url = self.urlBase + endpoint
+        self.request.method = &#34;PUT&#34; 
         self.request.data = json.dumps(new_attr.toDict())              
         if self.debug:
             print(self.request.data)
@@ -1043,6 +1071,7 @@ New Server
     self.prepare_headers()
     self.request.params = self.params.toDict()
     if self.debug:
+        print(self.request.url)
         print(self.request.params)
     req = self.request.prepare()
     session = requests.Session()
@@ -1149,40 +1178,55 @@ New Server
 </details>
 </dd>
 <dt id="insightlab.Insight.API.update_attribute"><code class="name flex">
-<span>def <span class="ident">update_attribute</span></span>(<span>self, object_id, attribute)</span>
+<span>def <span class="ident">update_attribute</span></span>(<span>self, object_id, attribute, append=False)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Updates an attribute for a given object.</p>
+<div class="desc"><p>Updates an attribute's value for a given object.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>object_id</code></strong> :&ensp;<code>str</code></dt>
 <dd>The id of the object to update</dd>
 <dt><strong><code>attribute</code></strong> :&ensp;<code>Attributes</code></dt>
-<dd>An attribute object</dd>
+<dd>An 'Attributes' object</dd>
+<dt><strong><code>append</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Default: False. If set to True, it will append the given value.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def update_attribute(self, object_id, attribute):
+<pre><code class="python">def update_attribute(self, object_id, attribute, append = False):
     &#34;&#34;&#34;
-    Updates an attribute for a given object.
+    Updates an attribute&#39;s value for a given object.
 
     Args:
         object_id (str): The id of the object to update
-        attribute (Attributes): An attribute object
-    &#34;&#34;&#34;
-    endpoint = f&#34;/rest/insight/1.0/object/{object_id}&#34;
-    self.request.url = self.urlBase + endpoint
-    self.request.method = &#34;PUT&#34;        
+        attribute (Attributes): An &#39;Attributes&#39; object
+        append (bool): Default: False. If set to True, it will append the given value.
+    &#34;&#34;&#34;  
+
+    # Build the object to replace.     
     new_attr = DotMap()
     new_attr.attributes = []
     sub_attr = DotMap()
     sub_attr.objectTypeAttributeId = attribute.objectTypeAttributeId
     sub_attr.objectAttributeValues = []
     for attr in attribute.objectAttributeValues:
-        sub_attr.objectAttributeValues.append(attr)
+        sub_attr.objectAttributeValues.append(attr)        
+    if append:
+        obj = self.load(object_id)
+        for attr in obj.parsed.attributes:
+            if attr.objectTypeAttribute.id == attribute.objectTypeAttributeId:
+                for vals in attr.objectAttributeValues:
+                    if vals.referencedType:
+                        sub_attr.objectAttributeValues.append({&#34;value&#34;: vals.referencedObject.id})
+                    else:
+                        sub_attr.objectAttributeValues.append({&#34;value&#34;: vals.value})
     new_attr.attributes.append(sub_attr)
+    # need to set this afterwards because self.load will overwrite.
+    endpoint = f&#34;/rest/insight/1.0/object/{object_id}&#34;
+    self.request.url = self.urlBase + endpoint
+    self.request.method = &#34;PUT&#34; 
     self.request.data = json.dumps(new_attr.toDict())              
     if self.debug:
         print(self.request.data)
